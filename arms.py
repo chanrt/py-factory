@@ -50,7 +50,10 @@ class Arm:
 
                 if self.angle > 2 * pi:
                     self.angle -= 2 * pi
-                if abs(self.angle - self.start_angle) < c.arm_speed:
+                elif self.angle < 0:
+                    self.angle += 2 * pi
+
+                if abs(self.angle - self.start_angle) % (2 * pi) < c.arm_speed:
                     self.angle = self.start_angle
         else:
             self.angle -= c.arm_speed
@@ -62,7 +65,7 @@ class Arm:
             self.caught_item.x = self.end_x
             self.caught_item.y = self.end_y
 
-            if abs(self.angle - self.stop_angle) < c.arm_speed:
+            if abs(self.angle - self.stop_angle) % (2 * pi) < c.arm_speed:
                 arm_row = int(self.end_y / c.cell_length)
                 arm_col = int(self.end_x / c.cell_length)
                 if im.item_grid[arm_row, arm_col] == 0:

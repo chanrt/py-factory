@@ -70,7 +70,6 @@ def game_loop():
                     gm.destroy((cell_row, cell_col))
                     am.remove_arm(cell_row, cell_col)
 
-
         c.screen.fill(c.bg_color)
 
         if c.show_gridlines:

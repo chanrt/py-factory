@@ -21,7 +21,7 @@ class Constants:
         self.conveyor_speed = 0.2
 
         self.arm_state = 1
-        self.arm_speed = 1 * 3.14 / 180
+        self.arm_speed = 0.5 * 3.14 / 180
 
     def set_screen(self, screen):
         self.screen = screen
