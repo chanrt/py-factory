@@ -17,6 +17,7 @@ class Constants:
         self.show_gridlines = True
         self.const_state = 1
         self.conveyor_state = 1
+        self.conveyor_speed = 0.1
 
     def set_screen(self, screen):
         self.screen = screen

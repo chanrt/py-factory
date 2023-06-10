@@ -1,10 +1,14 @@
 import pygame as pg
 
 from constants import consts as c
-from grid import grid as g
+from grid import grid_manager as gm
+from items import item_manager as im
 
 
 def game_loop():
+    im.add_item(5, 5, 3)
+    im.add_item(5, 5, 5)
+
     while True:
         keys_pressed = pg.key.get_pressed()
         played_moved = move_player(keys_pressed)
@@ -13,9 +17,9 @@ def game_loop():
         if c.const_state == 1:
             left, _, right = pg.mouse.get_pressed()
             if left:
-                g.update(c.conveyor_state, (cell_row, cell_col))
+                gm.update(c.conveyor_state, (cell_row, cell_col))
             if right:
-                g.destroy((cell_row, cell_col))
+                gm.destroy((cell_row, cell_col))
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -29,7 +33,7 @@ def game_loop():
                     c.toggle_gridlines()
 
                 if event.key == pg.K_r:
-                    g.toggle_rotation((cell_row, cell_col))
+                    gm.toggle_rotation((cell_row, cell_col))
                     if c.const_state == 1:
                         c.cycle_conveyor_state()
 
@@ -40,7 +44,10 @@ def game_loop():
 
         pg.draw.rect(c.screen, c.highlight_color, (cell_x, cell_y, c.cell_length - 3, c.cell_length - 3))
 
-        g.render()
+        im.update()
+
+        gm.render()
+        im.render()
 
         pg.display.flip()
 

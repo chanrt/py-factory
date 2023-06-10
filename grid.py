@@ -5,7 +5,7 @@ from constants import consts as c
 from images import img as i
 
 
-class Grid:
+class GridManager:
     def __init__(self):
         self.grid = np.zeros((c.num_cells, c.num_cells), dtype=int)
 
@@ -29,14 +29,18 @@ class Grid:
 
     def render(self):
         for loc in self.sprite_locations:
-            if self.grid[loc] != 0:
+            if self.is_structure(loc):
                 row, col = loc
                 x = col * c.cell_length - c.player_x
                 y = row * c.cell_length - c.player_y
-                c.screen.blit(i.images[self.grid[loc] - 1], (x, y))
+                c.screen.blit(i.images[self.grid[loc]], (x, y))
 
     def is_conveyor(self, loc):
         return 0 < self.grid[loc] < 5
+    
+    def is_structure(self, loc):
+        if self.grid[loc] in [1, 2, 3, 4]:
+            return True
 
 
-grid = Grid()
+grid_manager = GridManager()
