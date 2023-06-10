@@ -12,6 +12,7 @@ class Constants:
 
         self.bg_color = pg.Color("#013220")
         self.grid_color = pg.Color("#ffffff")
+        self.highlight_color = pg.Color("#ff0000")
 
     def set_screen(self, screen):
         self.screen = screen
