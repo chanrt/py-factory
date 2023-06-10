@@ -17,7 +17,7 @@ class GridManager:
             self.sprite_locations.append(loc)
 
     def toggle_rotation(self, loc):
-        if self.grid[loc] != 0:
+        if 0 < self.grid[loc] < 5:
             self.grid[loc] += 1
             if self.grid[loc] > 4:
                 self.grid[loc] = 1
@@ -39,7 +39,7 @@ class GridManager:
         return 0 < self.grid[loc] < 5
     
     def is_structure(self, loc):
-        if self.grid[loc] in [1, 2, 3, 4]:
+        if self.grid[loc] in [1, 2, 3, 4, 6]:
             return True
 
 

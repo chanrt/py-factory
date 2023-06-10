@@ -10,14 +10,14 @@ class Item:
         self.item = item
         self.row = row
         self.col = col
-        self.x = col * c.cell_length - c.player_x + c.cell_length // 2
-        self.y = row * c.cell_length - c.player_y + c.cell_length // 2
+        self.calc_position()
 
         self.last_dir = None
+        self.caught = False
 
     def move(self, direction):
         if self.last_dir is not None and direction != self.last_dir:
-            self.snap()
+            self.calc_position()
 
         if direction == "left":
             self.x -= c.conveyor_speed
@@ -30,12 +30,12 @@ class Item:
 
         self.last_dir = direction
 
-        self.row = int(self.y // c.cell_length)
-        self.col = int(self.x // c.cell_length)
+        self.row = int(self.y / c.cell_length)
+        self.col = int(self.x / c.cell_length)
 
-    def snap(self):
-        self.x = self.col * c.cell_length - c.player_x + c.cell_length // 2
-        self.y = self.row * c.cell_length - c.player_y + c.cell_length // 2
+    def calc_position(self):
+        self.x = self.col * c.cell_length + c.cell_length // 2
+        self.y = self.row * c.cell_length + c.cell_length // 2
 
     def render(self):
         c.screen.blit(i.images[self.item], (self.x - c.player_x - c.cell_length // 2, self.y - c.player_y - c.cell_length // 2))
@@ -50,8 +50,33 @@ class ItemManager:
         self.items.append(Item(item, row, col))
         self.item_grid[row, col] = item
 
-    def update(self):
+    def remove_item(self, row, col):
         for item in self.items:
+            if item.row == row and item.col == col:
+                self.items.remove(item)
+                self.item_grid[row, col] = 0
+                return
+
+    def fetch_item(self, row, col):
+        for item in self.items:
+            if item.row == row and item.col == col:
+                item.caught = True
+                self.item_grid[row, col] = 0
+                return item
+            
+    def drop_item(self, item, end_x, end_y):
+        item.caught = False
+        item.row = int(end_y / c.cell_length)
+        item.col = int(end_x / c.cell_length)
+
+        if self.item_grid[item.row, item.col] == 0:
+            item.calc_position()
+            self.item_grid[item.row, item.col] = item.item
+        else:
+            self.items.remove(item)
+
+    def update(self):
+        for item in [item for item in self.items if not item.caught]:
             old_row, old_col = item.row, item.col
 
             if 0 < gm.grid[old_row, old_col] < 5:
@@ -68,11 +93,14 @@ class ItemManager:
                 if old_row != new_row or old_col != new_col:
                     self.item_grid[old_row, old_col] = 0
                     self.item_grid[new_row, new_col] = item.item
-                
 
     def render(self):
         for item in self.items:
             item.render()
+
+    def apply_zoom(self):
+        for item in self.items:
+            item.calc_position()
 
 
 item_manager = ItemManager()

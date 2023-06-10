@@ -1,8 +1,11 @@
+from numpy import cos, pi, sin
 import pygame as pg
 
+from arms import arm_manager as am
 from constants import consts as c
 from grid import grid_manager as gm
 from items import item_manager as im
+from images import img as i
 
 
 def game_loop():
@@ -29,25 +32,59 @@ def game_loop():
                 if event.key == pg.K_ESCAPE:
                     return
                 
+                # change construction states
+                if event.key == pg.K_1:
+                    c.const_state = 1
+                elif event.key == pg.K_2:
+                    c.const_state = 2
+                
+                # toggles
                 if event.key == pg.K_g:
                     c.toggle_gridlines()
-
                 if event.key == pg.K_r:
                     gm.toggle_rotation((cell_row, cell_col))
+                    am.toggle_rotation(cell_row, cell_col)
                     if c.const_state == 1:
                         c.cycle_conveyor_state()
+                    if c.const_state == 2:
+                        c.cycle_arm_state()
+
+                # zoom in/out
+                if event.key == pg.K_m or event.key == pg.K_n:
+                    if event.key == pg.K_m:
+                        c.cell_length += 5
+                    else:
+                        c.cell_length -= 5
+
+                    i.reload_images()
+                    am.apply_zoom()
+                    im.apply_zoom()
+
+            if event.type == pg.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if c.const_state == 2:
+                        gm.update(6, (cell_row, cell_col))
+                        am.add_arm(cell_row, cell_col, c.arm_state)
+                if event.button == 3:
+                    im.remove_item(cell_row, cell_col)
+                    gm.destroy((cell_row, cell_col))
+                    am.remove_arm(cell_row, cell_col)
+
 
         c.screen.fill(c.bg_color)
 
         if c.show_gridlines:
             draw_gridlines()
 
-        pg.draw.rect(c.screen, c.highlight_color, (cell_x, cell_y, c.cell_length - 3, c.cell_length - 3))
+        if gm.grid[cell_row, cell_col] == 0:
+            draw_action(cell_x, cell_y)
 
         im.update()
+        am.update()
 
         gm.render()
         im.render()
+        am.render()
 
         pg.display.flip()
 
@@ -90,6 +127,29 @@ def get_pointer_params():
     cell_y = cell_row * c.cell_length - c.player_y + 2 
 
     return cell_row, cell_col, cell_x, cell_y
+
+
+def draw_action(cell_x, cell_y):
+    if c.const_state == 1:
+        screen.blit(i.images[c.conveyor_state], (cell_x - 1, cell_y - 1))
+    elif c.const_state == 2:
+        screen.blit(i.images[6], (cell_x - 1, cell_y - 1))
+        start_x = cell_x + c.cell_length // 2
+        start_y = cell_y + c.cell_length // 2
+
+        if c.arm_state == 1:
+            angle = pi / 2
+        elif c.arm_state == 2:
+            angle = 0
+        elif c.arm_state == 3:
+            angle = 3 * pi / 2
+        elif c.arm_state == 4:
+            angle = pi
+
+        end_x = start_x + c.cell_length * cos(angle)
+        end_y = start_y - c.cell_length * sin(angle)
+
+        pg.draw.line(c.screen, c.arm_color, (start_x, start_y), (end_x, end_y), 2)
 
 
 def draw_gridlines():

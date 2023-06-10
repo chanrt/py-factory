@@ -12,12 +12,16 @@ class Constants:
 
         self.bg_color = pg.Color("#222222")
         self.grid_color = pg.Color("#aaaaaa")
-        self.highlight_color = pg.Color("#ff0000")
+        self.arm_color = pg.Color("#ffff00")
 
         self.show_gridlines = True
         self.const_state = 1
+
         self.conveyor_state = 1
-        self.conveyor_speed = 0.1
+        self.conveyor_speed = 0.2
+
+        self.arm_state = 1
+        self.arm_speed = 1 * 3.14 / 180
 
     def set_screen(self, screen):
         self.screen = screen
@@ -30,6 +34,11 @@ class Constants:
         self.conveyor_state += 1
         if self.conveyor_state > 4:
             self.conveyor_state = 1
+
+    def cycle_arm_state(self):
+        self.arm_state += 1
+        if self.arm_state > 4:
+            self.arm_state = 1
 
 
 consts = Constants()
