@@ -39,7 +39,7 @@ class GridManager:
         return 0 < self.grid[loc] < 5
     
     def is_structure(self, loc):
-        if self.grid[loc] in [1, 2, 3, 4, 6]:
+        if self.grid[loc] in [1, 2, 3, 4, 6, 10, 11, 12]:
             return True
 
 

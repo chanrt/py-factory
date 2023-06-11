@@ -9,8 +9,12 @@ from images import img as i
 
 
 def game_loop():
+    i.convert_alpha()
+
     im.add_item(5, 5, 3)
-    im.add_item(5, 5, 5)
+    im.add_item(7, 5, 4)
+    im.add_item(8, 5, 5)
+    im.add_item(9, 5, 6)
 
     while True:
         keys_pressed = pg.key.get_pressed()
@@ -37,6 +41,12 @@ def game_loop():
                     c.const_state = 1
                 elif event.key == pg.K_2:
                     c.const_state = 2
+                elif event.key == pg.K_3:
+                    c.const_state = 3
+                elif event.key == pg.K_4:
+                    c.const_state = 4
+                elif event.key == pg.K_5:
+                    c.const_state = 5
                 
                 # toggles
                 if event.key == pg.K_g:
@@ -65,6 +75,12 @@ def game_loop():
                     if c.const_state == 2:
                         gm.update(6, (cell_row, cell_col))
                         am.add_arm(cell_row, cell_col, c.arm_state)
+                    if c.const_state == 3:
+                        gm.update(10, (cell_row, cell_col))
+                    if c.const_state == 4:
+                        gm.update(11, (cell_row, cell_col))
+                    if c.const_state == 5:
+                        gm.update(12, (cell_row, cell_col))
                 if event.button == 3:
                     im.remove_item(cell_row, cell_col)
                     gm.destroy((cell_row, cell_col))
@@ -149,6 +165,12 @@ def draw_action(cell_x, cell_y):
         end_y = start_y - c.cell_length * sin(angle)
 
         pg.draw.line(c.screen, c.arm_color, (start_x, start_y), (end_x, end_y), 2)
+    elif c.const_state == 3:
+        screen.blit(i.images[10], (cell_x - 1, cell_y - 1))
+    elif c.const_state == 4:
+        screen.blit(i.images[11], (cell_x - 1, cell_y - 1))
+    elif c.const_state == 5:
+        screen.blit(i.images[12], (cell_x - 1, cell_y - 1))
 
 
 def draw_gridlines():

@@ -43,7 +43,7 @@ class Arm:
                 arm_col = int(self.end_x / c.cell_length)
                 arm_row = int(self.end_y / c.cell_length)
 
-                if im.item_grid[arm_row, arm_col] != 0:
+                if im.item_grid[arm_row][arm_col] != 0:
                     self.caught_item = im.fetch_item(arm_row, arm_col)
             else:
                 self.angle += c.arm_speed
@@ -68,7 +68,7 @@ class Arm:
             if abs(self.angle - self.stop_angle) % (2 * pi) < c.arm_speed:
                 arm_row = int(self.end_y / c.cell_length)
                 arm_col = int(self.end_x / c.cell_length)
-                if im.item_grid[arm_row, arm_col] == 0:
+                if im.item_grid[arm_row][arm_col] == 0:
                     im.drop_item(self.caught_item, self.end_x, self.end_y)
                     self.caught_item = None
                     
@@ -82,6 +82,9 @@ class Arm:
 
     def render(self):
         pg.draw.line(c.screen, c.arm_color, (self.pivot_x, self.pivot_y), (self.end_x, self.end_y), 2)
+
+        if self.caught_item is not None:
+            c.screen.blit(i.images[self.caught_item.item], (self.end_x - c.cell_length // 2, self.end_y - c.cell_length // 2))
 
 
 class ArmManager:
