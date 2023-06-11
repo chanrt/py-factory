@@ -8,6 +8,7 @@ from constants import consts as c
 from grid import grid_manager as gm
 from items import item_manager as im
 from images import img as i
+from mines import mine_manager as mm
 from world import world as w
 
 
@@ -87,6 +88,7 @@ def game_loop():
                         am.add_arm(cell_row, cell_col, c.arm_state)
                     if c.const_state == 3:
                         gm.update(10, (cell_row, cell_col))
+                        mm.add_mine(cell_row, cell_col, c.mine_state)
                     if c.const_state == 4:
                         gm.update(11, (cell_row, cell_col))
                     if c.const_state == 5:
@@ -103,6 +105,7 @@ def game_loop():
 
         im.update()
         am.update()
+        mm.update()
 
         w.render()
         gm.render()

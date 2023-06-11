@@ -10,12 +10,13 @@ class World:
         self.ore_locations = []
 
         self.world[15:17, 15:17] = 1
+        self.world[15:17, 20:23] = 2
         self.populate_ore_locations()
 
     def populate_ore_locations(self):
         for row in range(c.num_cells):
             for col in range(c.num_cells):
-                if self.world[row, col] == 1:
+                if self.world[row, col] > 0:
                     self.ore_locations.append((row, col))
 
     def render(self):

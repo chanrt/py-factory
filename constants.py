@@ -30,12 +30,14 @@ class Constants:
         self.source_color = pg.Color("#ff0000")
         self.sink_color = pg.Color("#0000ff")
 
-        self.ore_colors = [None, pg.Color("#c0c0c0")]
+        self.ore_colors = [None, pg.Color("#a19d94"), pg.Color("#b87333")]
 
     def set_speeds(self):
         self.player_speed = 200
         self.conveyor_speed = 25
         self.arm_speed = 90 * 3.14 / 180
+
+        self.mine_time = 2
 
     def set_dt(self, dt):
         self.dt = dt
