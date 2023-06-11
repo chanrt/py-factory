@@ -26,7 +26,7 @@ class Constants:
         self.arm_color = pg.Color("#ffff00")
         self.action_color = pg.Color("#00ff00")
         self.source_color = pg.Color("#ff0000")
-        self.sink_color = pg.Color("#0000ff")
+        self.target_color = pg.Color("#0000ff")
         self.working_color = pg.Color("#ffffff")
         self.full_color = pg.Color("#ffa500")
 

@@ -1,5 +1,3 @@
-
-
 id_map = {}
 
 id_map["conveyor"] = 0

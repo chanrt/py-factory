@@ -2,6 +2,11 @@ from numpy import cos, pi, sin
 from time import time
 import pygame as pg
 
+from arm import Arm
+from conveyor import Conveyor
+from furnace import Furnace
+from mine import Mine
+
 from constants import consts as c
 from structures import structure_manager as sm
 from id_mapping import id_map
@@ -54,14 +59,17 @@ def game_loop():
                         c.cell_length -= 5
 
                     i.reload_images()
+                    sm.apply_zoom()
                     im.apply_zoom()
 
             if event.type == pg.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     sm.add(cell_row, cell_col, c.const_state - 1, c.rot_state)
                 if event.button == 3:
-                    sm.remove(cell_row, cell_col)
-                    im.remove(cell_row, cell_col)
+                    if im.grid[cell_row][cell_col] != 0:
+                        im.remove(cell_row, cell_col)
+                    elif sm.grid[cell_row][cell_col] != 0:
+                        sm.remove(cell_row, cell_col)
 
         c.screen.fill(c.bg_color)
         if c.show_gridlines:
@@ -76,6 +84,8 @@ def game_loop():
 
         if sm.grid[cell_row][cell_col] == 0:
             draw_action(cell_x, cell_y)
+        else:
+            sm.grid[cell_row][cell_col].render_tooltip()
 
         pg.display.flip()
 
@@ -133,21 +143,21 @@ def draw_action(cell_x, cell_y):
 
     elif c.const_state == 3:
         c.screen.blit(i.images[id_map["mine"]], (cell_x - 1, cell_y - 1))
-        draw_sink(cell_x, cell_y, c.rot_state)
+        draw_target(cell_x, cell_y, c.rot_state)
             
     elif c.const_state == 4:
         c.screen.blit(i.images[id_map["furnace"]], (cell_x - 1, cell_y - 1))
-        draw_sink(cell_x, cell_y, c.rot_state)
+        draw_target(cell_x, cell_y, c.rot_state)
 
     elif c.const_state == 5:
         c.screen.blit(i.images[id_map["factory"]], (cell_x - 1, cell_y - 1))
 
 
-def draw_sink(cell_x, cell_y, state):
+def draw_target(cell_x, cell_y, state):
     translations = [(0, -1), (1, 0), (0, 1), (-1, 0)]
     x = cell_x + translations[state][0] * c.cell_length - c.player_x + c.cell_length // 2
     y = cell_y + translations[state][1] * c.cell_length - c.player_y + c.cell_length // 2
-    pg.draw.circle(c.screen, c.sink_color, (x, y), c.cell_length // 3)
+    pg.draw.circle(c.screen, c.target_color, (x, y), 5)
 
 
 def draw_gridlines():

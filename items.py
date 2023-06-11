@@ -108,5 +108,9 @@ class ItemManager:
             return True
         else:
             return False
+        
+    def apply_zoom(self):
+        for item in self.items:
+            item.calc_position()
 
 item_manager = ItemManager()

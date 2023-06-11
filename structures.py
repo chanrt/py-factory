@@ -1,5 +1,6 @@
 from arm import Arm
 from conveyor import Conveyor
+from factory import Factory
 from furnace import Furnace
 from mine import Mine
 
@@ -34,6 +35,8 @@ class StructureManager:
                 new_structure = Mine(row, col, direction)
             elif structure_type == id_map["furnace"]:
                 new_structure = Furnace(row, col, direction)
+            elif structure_type == id_map["factory"]:
+                new_structure = Factory(row, col, direction)
 
             self.grid[row][col] = new_structure
             self.structures.append(new_structure)
@@ -54,6 +57,10 @@ class StructureManager:
 
     def item_can_be_placed(self, row, col):
         return self.grid[row][col] == 0 or isinstance(self.grid[row][col], Conveyor)
+    
+    def apply_zoom(self):
+        for structure in self.structures:
+            structure.calc_position()
 
 
 structure_manager = StructureManager()

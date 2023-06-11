@@ -2,6 +2,7 @@ import pygame as pg
 from numpy import cos, pi, sin
 
 from constants import consts as c
+from furnace import Furnace
 from id_mapping import id_map
 from images import img as i
 
@@ -20,7 +21,11 @@ class Arm:
         if self.caught_item is None:
             if self.angle == self.start_angle:
                 if im.grid[self.source_row][self.source_col] != 0:
-                    self.caught_item = im.fetch_item(self.source_row, self.source_col)
+                    if isinstance(sm.grid[self.target_row][self.target_col], Furnace):
+                        if im.contains_ore(self.source_row, self.source_col):
+                            self.caught_item = im.fetch_item(self.source_row, self.source_col)
+                    else:
+                        self.caught_item = im.fetch_item(self.source_row, self.source_col)
             else:
                 self.angle += c.arm_speed * c.dt
                 self.constrain_angle()
@@ -40,6 +45,10 @@ class Arm:
     def render(self):
         c.screen.blit(i.images[id_map["arm"]], (self.x - c.player_x, self.y - c.player_y))
         pg.draw.line(c.screen, c.arm_color, (self.pivot_x, self.pivot_y), (self.end_x, self.end_y), 2)
+
+    def render_tooltip(self):
+        pg.draw.circle(c.screen, c.source_color, (self.source_col * c.cell_length - c.player_x + c.cell_length // 2, self.source_row * c.cell_length - c.player_y + c.cell_length // 2), 5, 2)
+        pg.draw.circle(c.screen, c.target_color, (self.target_col * c.cell_length - c.player_x + c.cell_length // 2, self.target_row * c.cell_length - c.player_y + c.cell_length // 2), 5)
 
     def rotate(self, direction):
         self.direction = (self.direction + direction) % 4

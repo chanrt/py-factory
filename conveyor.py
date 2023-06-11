@@ -17,7 +17,8 @@ class Conveyor:
     def render(self):
         c.screen.blit(i.images[id_map["conveyor"]][self.direction], (self.x - c.player_x, self.y - c.player_y))
 
+    def render_tooltip(self):
+        pass
+
     def rotate(self, direction):
         self.direction = (self.direction + direction) % 4
-
-    
