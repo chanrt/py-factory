@@ -20,13 +20,13 @@ class Item:
             self.calc_position()
 
         if direction == "left":
-            self.x -= c.conveyor_speed
+            self.x -= c.conveyor_speed * c.dt
         elif direction == "right":
-            self.x += c.conveyor_speed
+            self.x += c.conveyor_speed * c.dt
         elif direction == "up":
-            self.y -= c.conveyor_speed
+            self.y -= c.conveyor_speed * c.dt
         elif direction == "down":
-            self.y += c.conveyor_speed
+            self.y += c.conveyor_speed * c.dt
 
         self.last_dir = direction
 

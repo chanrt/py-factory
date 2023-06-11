@@ -1,11 +1,14 @@
 from numpy import cos, pi, sin
+from time import time
 import pygame as pg
+
 
 from arms import arm_manager as am
 from constants import consts as c
 from grid import grid_manager as gm
 from items import item_manager as im
 from images import img as i
+from world import world as w
 
 
 def game_loop():
@@ -17,6 +20,9 @@ def game_loop():
     im.add_item(9, 5, 6)
 
     while True:
+        start = time()
+        c.clock.tick(c.fps)
+
         keys_pressed = pg.key.get_pressed()
         played_moved = move_player(keys_pressed)
         cell_row, cell_col, cell_x, cell_y = get_pointer_params()
@@ -36,17 +42,8 @@ def game_loop():
                 if event.key == pg.K_ESCAPE:
                     return
                 
-                # change construction states
-                if event.key == pg.K_1:
-                    c.const_state = 1
-                elif event.key == pg.K_2:
-                    c.const_state = 2
-                elif event.key == pg.K_3:
-                    c.const_state = 3
-                elif event.key == pg.K_4:
-                    c.const_state = 4
-                elif event.key == pg.K_5:
-                    c.const_state = 5
+                if pg.K_0 < event.key < pg.K_6:
+                    c.const_state = event.key - pg.K_0
                 
                 # toggles
                 if event.key == pg.K_g:
@@ -54,10 +51,23 @@ def game_loop():
                 if event.key == pg.K_r:
                     gm.toggle_rotation((cell_row, cell_col))
                     am.toggle_rotation(cell_row, cell_col)
+
                     if c.const_state == 1:
                         c.cycle_conveyor_state()
                     if c.const_state == 2:
                         c.cycle_arm_state()
+                    if c.const_state == 3:
+                        c.cycle_mine_state()
+                if event.key == pg.K_l:
+                    gm.toggle_rotation((cell_row, cell_col), -1)
+                    am.toggle_rotation(cell_row, cell_col, -1)
+
+                    if c.const_state == 1:
+                        c.cycle_conveyor_state(-1)
+                    if c.const_state == 2:
+                        c.cycle_arm_state(-1)
+                    if c.const_state == 3:
+                        c.cycle_mine_state(-1)
 
                 # zoom in/out
                 if event.key == pg.K_m or event.key == pg.K_n:
@@ -91,42 +101,46 @@ def game_loop():
         if c.show_gridlines:
             draw_gridlines()
 
-        if gm.grid[cell_row, cell_col] == 0:
-            draw_action(cell_x, cell_y)
-
         im.update()
         am.update()
 
+        w.render()
         gm.render()
         im.render()
         am.render()
 
+        if gm.grid[cell_row, cell_col] == 0:
+            draw_action(cell_x, cell_y)
+
         pg.display.flip()
+
+        end = time()
+        c.set_dt(end - start)
 
 
 def move_player(keys_pressed):
     moved = False
 
     if keys_pressed[pg.K_UP] or keys_pressed[pg.K_w]:
-        c.player_y -= c.player_speed
+        c.player_y -= c.player_speed * c.dt
         moved = True
         if c.player_y < 0:
             c.player_y = 0
 
     if keys_pressed[pg.K_DOWN] or keys_pressed[pg.K_s]:
-        c.player_y += c.player_speed
+        c.player_y += c.player_speed * c.dt
         moved = True
         if c.player_y + c.sh > c.num_cells * c.cell_length:
             c.player_y = c.num_cells * c.cell_length - c.sh
 
     if keys_pressed[pg.K_LEFT] or keys_pressed[pg.K_a]:
-        c.player_x -= c.player_speed
+        c.player_x -= c.player_speed * c.dt
         moved = True
         if c.player_x < 0:
             c.player_x = 0
 
     if keys_pressed[pg.K_RIGHT] or keys_pressed[pg.K_d]:
-        c.player_x += c.player_speed
+        c.player_x += c.player_speed * c.dt
         moved = True
         if c.player_x + c.sw > c.num_cells * c.cell_length:
             c.player_x = c.num_cells * c.cell_length - c.sw
@@ -136,8 +150,8 @@ def move_player(keys_pressed):
 
 def get_pointer_params():
     mouse_x, mouse_y = pg.mouse.get_pos()
-    cell_row = (mouse_y + c.player_y) // c.cell_length
-    cell_col = (mouse_x + c.player_x) // c.cell_length
+    cell_row = int((mouse_y + c.player_y) / c.cell_length)
+    cell_col = int((mouse_x + c.player_x) / c.cell_length)
     cell_x = cell_col * c.cell_length - c.player_x + 2
     cell_y = cell_row * c.cell_length - c.player_y + 2 
 
@@ -145,10 +159,12 @@ def get_pointer_params():
 
 
 def draw_action(cell_x, cell_y):
+    pg.draw.circle(c.screen, c.action_color, (cell_x + c.cell_length // 2, cell_y + c.cell_length // 2), c.cell_length, 2)
+
     if c.const_state == 1:
-        screen.blit(i.images[c.conveyor_state], (cell_x - 1, cell_y - 1))
+        c.screen.blit(i.images[c.conveyor_state], (cell_x - 1, cell_y - 1))
     elif c.const_state == 2:
-        screen.blit(i.images[6], (cell_x - 1, cell_y - 1))
+        c.screen.blit(i.images[6], (cell_x - 1, cell_y - 1))
         start_x = cell_x + c.cell_length // 2
         start_y = cell_y + c.cell_length // 2
 
@@ -166,11 +182,16 @@ def draw_action(cell_x, cell_y):
 
         pg.draw.line(c.screen, c.arm_color, (start_x, start_y), (end_x, end_y), 2)
     elif c.const_state == 3:
-        screen.blit(i.images[10], (cell_x - 1, cell_y - 1))
+        c.screen.blit(i.images[10], (cell_x - 1, cell_y - 1))
+        translations = [(0, -1), (1, 0), (0, 1), (-1, 0)]
+        x = cell_x + translations[c.mine_state - 1][0] * c.cell_length - c.player_x + c.cell_length // 2
+        y = cell_y + translations[c.mine_state - 1][1] * c.cell_length - c.player_y + c.cell_length // 2
+        pg.draw.circle(c.screen, c.sink_color, (x, y), c.cell_length // 3)
+            
     elif c.const_state == 4:
-        screen.blit(i.images[11], (cell_x - 1, cell_y - 1))
+        c.screen.blit(i.images[11], (cell_x - 1, cell_y - 1))
     elif c.const_state == 5:
-        screen.blit(i.images[12], (cell_x - 1, cell_y - 1))
+        c.screen.blit(i.images[12], (cell_x - 1, cell_y - 1))
 
 
 def draw_gridlines():
@@ -185,5 +206,7 @@ if __name__ == '__main__':
 
     pg.init()
     screen = pg.display.set_mode((0, 0), pg.FULLSCREEN)
+    clock = pg.time.Clock()
     c.set_screen(screen)
+    c.set_clock(clock)
     game_loop()

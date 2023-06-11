@@ -46,17 +46,17 @@ class Arm:
                 if im.item_grid[arm_row][arm_col] != 0:
                     self.caught_item = im.fetch_item(arm_row, arm_col)
             else:
-                self.angle += c.arm_speed
+                self.angle += c.arm_speed * c.dt
 
                 if self.angle > 2 * pi:
                     self.angle -= 2 * pi
                 elif self.angle < 0:
                     self.angle += 2 * pi
 
-                if abs(self.angle - self.start_angle) % (2 * pi) < c.arm_speed:
+                if abs(self.angle - self.start_angle) % (2 * pi) < c.arm_speed * c.dt:
                     self.angle = self.start_angle
         else:
-            self.angle -= c.arm_speed
+            self.angle -= c.arm_speed * c.dt
 
             if self.angle < 0:
                 self.angle += 2 * pi
@@ -65,7 +65,7 @@ class Arm:
             self.caught_item.x = self.end_x
             self.caught_item.y = self.end_y
 
-            if abs(self.angle - self.stop_angle) % (2 * pi) < c.arm_speed:
+            if abs(self.angle - self.stop_angle) % (2 * pi) < c.arm_speed * c.dt:
                 arm_row = int(self.end_y / c.cell_length)
                 arm_col = int(self.end_x / c.cell_length)
                 if im.item_grid[arm_row][arm_col] == 0:
@@ -101,12 +101,15 @@ class ArmManager:
                     im.drop_item(arm.caught_item, arm.end_x, arm.end_y)
                 self.arms.remove(arm)
 
-    def toggle_rotation(self, row, col):
+    def toggle_rotation(self, row, col, direction = 1):
         for arm in self.arms:
             if arm.row == row and arm.col == col:
-                new_direction = arm.direction + 1
-                if new_direction > 4:
-                    new_direction = 1
+                new_direction = arm.direction + direction
+                if new_direction > 3:
+                    new_direction = 0
+                elif new_direction < 0:
+                    new_direction = 3
+                    
                 arm.direction = new_direction
                 arm.init_direction()
 

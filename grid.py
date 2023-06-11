@@ -16,11 +16,13 @@ class GridManager:
             self.grid[loc] = entity
             self.sprite_locations.append(loc)
 
-    def toggle_rotation(self, loc):
+    def toggle_rotation(self, loc, direction = 1):
         if 0 < self.grid[loc] < 5:
-            self.grid[loc] += 1
+            self.grid[loc] += direction
             if self.grid[loc] > 4:
                 self.grid[loc] = 1
+            elif self.grid[loc] < 1:
+                self.grid[loc] = 4
 
     def destroy(self, loc):
         self.grid[loc] = 0
