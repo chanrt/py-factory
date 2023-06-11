@@ -18,6 +18,7 @@ class Constants:
         self.conveyor_state = 1
         self.arm_state = 1
         self.mine_state = 1
+        self.furnace_state = 1
 
         self.set_colors()
         self.set_speeds()
@@ -29,6 +30,8 @@ class Constants:
         self.action_color = pg.Color("#00ff00")
         self.source_color = pg.Color("#ff0000")
         self.sink_color = pg.Color("#0000ff")
+        self.working_color = pg.Color("#ffffff")
+        self.full_color = pg.Color("#ffa500")
 
         self.ore_colors = [None, pg.Color("#a19d94"), pg.Color("#b87333")]
 
@@ -38,6 +41,7 @@ class Constants:
         self.arm_speed = 90 * 3.14 / 180
 
         self.mine_time = 2
+        self.smelt_time = 3
 
     def set_dt(self, dt):
         self.dt = dt
@@ -72,6 +76,13 @@ class Constants:
             self.mine_state = 1
         elif self.mine_state < 1:
             self.mine_state = 4
+
+    def cycle_furnace_state(self, direction = 1):
+        self.furnace_state += direction
+        if self.furnace_state > 4:
+            self.furnace_state = 1
+        elif self.furnace_state < 1:
+            self.furnace_state = 4
 
 
 consts = Constants()

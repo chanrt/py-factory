@@ -14,6 +14,7 @@ class Item:
 
         self.last_dir = None
         self.caught = False
+        self.display = True
 
     def move(self, direction):
         if self.last_dir is not None and direction != self.last_dir:
@@ -38,7 +39,8 @@ class Item:
         self.y = self.row * c.cell_length + c.cell_length // 2
 
     def render(self):
-        c.screen.blit(i.images[self.item], (self.x - c.player_x - c.cell_length // 2, self.y - c.player_y - c.cell_length // 2))
+        if self.display:
+            c.screen.blit(i.images[self.item], (self.x - c.player_x - c.cell_length // 2, self.y - c.player_y - c.cell_length // 2))
 
 
 class ItemManager:
@@ -108,6 +110,12 @@ class ItemManager:
             row, col = loc
             item = self.item_grid[row][col]
             item.calc_position()
+
+    def contains_ore(self, row, col):
+        if self.item_grid[row][col] != 0 and self.item_grid[row][col].item in [7, 9]:
+            return True
+        else:
+            return False
 
 
 item_manager = ItemManager()

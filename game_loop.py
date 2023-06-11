@@ -5,6 +5,7 @@ import pygame as pg
 
 from arms import arm_manager as am
 from constants import consts as c
+from furnaces import furnace_manager as fm
 from grid import grid_manager as gm
 from items import item_manager as im
 from images import img as i
@@ -52,6 +53,7 @@ def game_loop():
                 if event.key == pg.K_r:
                     gm.toggle_rotation((cell_row, cell_col))
                     am.toggle_rotation(cell_row, cell_col)
+                    mm.toggle_rotation(cell_row, cell_col)
 
                     if c.const_state == 1:
                         c.cycle_conveyor_state()
@@ -59,6 +61,8 @@ def game_loop():
                         c.cycle_arm_state()
                     if c.const_state == 3:
                         c.cycle_mine_state()
+                    if c.const_state == 4:
+                        c.cycle_furnace_state()
                 if event.key == pg.K_l:
                     gm.toggle_rotation((cell_row, cell_col), -1)
                     am.toggle_rotation(cell_row, cell_col, -1)
@@ -91,6 +95,7 @@ def game_loop():
                         mm.add_mine(cell_row, cell_col, c.mine_state)
                     if c.const_state == 4:
                         gm.update(11, (cell_row, cell_col))
+                        fm.add_furnace(cell_row, cell_col, c.furnace_state)
                     if c.const_state == 5:
                         gm.update(12, (cell_row, cell_col))
                 if event.button == 3:
@@ -106,11 +111,14 @@ def game_loop():
         im.update()
         am.update()
         mm.update()
+        fm.update()
 
         w.render()
         gm.render()
         im.render()
         am.render()
+        mm.render()
+        fm.render()
 
         if gm.grid[cell_row, cell_col] == 0:
             draw_action(cell_x, cell_y)
@@ -166,6 +174,7 @@ def draw_action(cell_x, cell_y):
 
     if c.const_state == 1:
         c.screen.blit(i.images[c.conveyor_state], (cell_x - 1, cell_y - 1))
+
     elif c.const_state == 2:
         c.screen.blit(i.images[6], (cell_x - 1, cell_y - 1))
         start_x = cell_x + c.cell_length // 2
@@ -182,19 +191,25 @@ def draw_action(cell_x, cell_y):
 
         end_x = start_x + c.cell_length * cos(angle)
         end_y = start_y - c.cell_length * sin(angle)
-
         pg.draw.line(c.screen, c.arm_color, (start_x, start_y), (end_x, end_y), 2)
+
     elif c.const_state == 3:
         c.screen.blit(i.images[10], (cell_x - 1, cell_y - 1))
-        translations = [(0, -1), (1, 0), (0, 1), (-1, 0)]
-        x = cell_x + translations[c.mine_state - 1][0] * c.cell_length - c.player_x + c.cell_length // 2
-        y = cell_y + translations[c.mine_state - 1][1] * c.cell_length - c.player_y + c.cell_length // 2
-        pg.draw.circle(c.screen, c.sink_color, (x, y), c.cell_length // 3)
+        draw_sink(cell_x, cell_y, c.mine_state)
             
     elif c.const_state == 4:
         c.screen.blit(i.images[11], (cell_x - 1, cell_y - 1))
+        draw_sink(cell_x, cell_y, c.furnace_state)
+
     elif c.const_state == 5:
         c.screen.blit(i.images[12], (cell_x - 1, cell_y - 1))
+
+
+def draw_sink(cell_x, cell_y, state):
+    translations = [(0, -1), (1, 0), (0, 1), (-1, 0)]
+    x = cell_x + translations[state - 1][0] * c.cell_length - c.player_x + c.cell_length // 2
+    y = cell_y + translations[state - 1][1] * c.cell_length - c.player_y + c.cell_length // 2
+    pg.draw.circle(c.screen, c.sink_color, (x, y), c.cell_length // 3)
 
 
 def draw_gridlines():

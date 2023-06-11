@@ -1,6 +1,7 @@
 import pygame as pg
 from numpy import cos, pi, sin
 
+from grid import grid_manager as gm
 from items import item_manager as im
 from constants import consts as c
 from images import img as i
@@ -18,15 +19,34 @@ class Arm:
         if self.direction == 1:
             self.start_angle = pi / 2
             self.stop_angle = 3 * pi / 2
+            self.source_row = self.row -1
+            self.source_col = self.col
+            self.target_row = self.row + 1
+            self.target_col = self.col
+
         elif self.direction == 2:
             self.start_angle = 0
             self.stop_angle = pi
+            self.source_row = self.row
+            self.source_col = self.col + 1
+            self.target_row = self.row
+            self.target_col = self.col - 1
+
         elif self.direction == 3:
             self.start_angle = 3 * pi / 2
             self.stop_angle = pi / 2
+            self.source_row = self.row + 1
+            self.source_col = self.col
+            self.target_row = self.row - 1
+            self.target_col = self.col
+
         elif self.direction == 4:
             self.start_angle = pi
             self.stop_angle = 0
+            self.source_row = self.row
+            self.source_col = self.col - 1
+            self.target_row = self.row
+            self.target_col = self.col + 1
 
         self.angle = self.start_angle
         self.caught_item = None
@@ -40,11 +60,14 @@ class Arm:
 
         if self.caught_item is None:
             if self.angle == self.start_angle:
-                arm_col = int(self.end_x / c.cell_length)
-                arm_row = int(self.end_y / c.cell_length)
+                if im.item_grid[self.source_row][self.source_col] != 0:
+                    # furnace check
+                    if gm.grid[self.target_row][self.target_col] == 11:
+                        if im.contains_ore(self.source_row, self.source_col):
+                            self.caught_item = im.fetch_item(self.source_row, self.source_col)
 
-                if im.item_grid[arm_row][arm_col] != 0:
-                    self.caught_item = im.fetch_item(arm_row, arm_col)
+                    else:
+                        self.caught_item = im.fetch_item(self.source_row, self.source_col)
             else:
                 self.angle += c.arm_speed * c.dt
 
@@ -66,9 +89,7 @@ class Arm:
             self.caught_item.y = self.end_y
 
             if abs(self.angle - self.stop_angle) % (2 * pi) < c.arm_speed * c.dt:
-                arm_row = int(self.end_y / c.cell_length)
-                arm_col = int(self.end_x / c.cell_length)
-                if im.item_grid[arm_row][arm_col] == 0:
+                if im.item_grid[self.target_row][self.target_col] == 0:
                     im.drop_item(self.caught_item, self.end_x, self.end_y)
                     self.caught_item = None
                     
