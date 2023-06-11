@@ -1,12 +1,13 @@
 import numpy as np
 
 from constants import consts as c
-from grid import grid_manager as gm
+from conveyor import Conveyor
+from id_mapping import id_map
 from images import img as i
 
 
 class Item:
-    def __init__(self, item, row, col):
+    def __init__(self, row, col, item):
         self.item = item
         self.row = row
         self.col = col
@@ -45,77 +46,67 @@ class Item:
 
 class ItemManager:
     def __init__(self):
-        self.item_grid = []
+        self.grid = []
         for _ in range(c.num_cells):
             new_row = [0 for _ in range(c.num_cells)]
-            self.item_grid.append(new_row)
-        self.locations = []
+            self.grid.append(new_row)
+        self.items = []
 
-    def add_item(self, item, row, col):
-        self.item_grid[row][col] = Item(item, row, col)
-        self.locations.append((row, col))
+    def update(self, sm):
+        for item in self.items:
+            old_row, old_col = item.row, item.col
 
-    def remove_item(self, row, col):
-        if (row, col) in self.locations:
-            self.locations.remove((row, col))
-            self.item_grid[row][col] = 0
+            if not item.caught and isinstance(sm.grid[old_row][old_col], Conveyor):
+                conveyor_direction = sm.grid[old_row][old_col].direction
 
-    def fetch_item(self, row, col):
-        item = self.item_grid[row][col]
-        item.caught = True
-
-        self.item_grid[row][col] = 0
-        self.locations.remove((row, col))
-        return item
-            
-    def drop_item(self, item, end_x, end_y):
-        item.caught = False
-        item.row = int(end_y / c.cell_length)
-        item.col = int(end_x / c.cell_length)
-        item.calc_position()
-        
-        self.item_grid[item.row][item.col] = item
-        self.locations.append((item.row, item.col))
-
-    def update(self):
-        for loc in self.locations:
-            old_row, old_col = loc
-            item = self.item_grid[old_row][old_col]
-
-            if not item.caught and 0 < gm.grid[old_row, old_col] < 5:
-                if gm.grid[old_row, old_col] == 1 and self.item_grid[old_row - 1][old_col] == 0:
+                if conveyor_direction == 0 and self.grid[old_row - 1][old_col] == 0:
                     item.move("up")
-                elif gm.grid[old_row, old_col] == 2 and self.item_grid[old_row][old_col + 1] == 0:
+                elif conveyor_direction == 1 and self.grid[old_row][old_col + 1] == 0:
                     item.move("right")
-                elif gm.grid[old_row, old_col] == 3 and self.item_grid[old_row + 1][old_col] == 0:
+                elif conveyor_direction == 2 and self.grid[old_row + 1][old_col] == 0:
                     item.move("down")
-                elif gm.grid[old_row, old_col] == 4 and self.item_grid[old_row][old_col - 1] == 0:
+                elif conveyor_direction == 3 and self.grid[old_row][old_col - 1] == 0:
                     item.move("left")
 
                 new_row, new_col = item.row, item.col
                 if old_row != new_row or old_col != new_col:
-                    self.item_grid[old_row][old_col] = 0
-                    self.item_grid[new_row][new_col] = item
-                    self.locations.remove((old_row, old_col))
-                    self.locations.append((new_row, new_col))
+                    self.grid[old_row][old_col] = 0
+                    self.grid[new_row][new_col] = item
 
     def render(self):
-        for loc in self.locations:
-            row, col = loc
-            item = self.item_grid[row][col]
+        for item in self.items:
             item.render()
 
-    def apply_zoom(self):
-        for loc in self.locations:
-            row, col = loc
-            item = self.item_grid[row][col]
-            item.calc_position()
+    def add(self, row, col, item):
+        new_item = Item(row, col, item)
+        self.grid[row][col] = new_item
+        self.items.append(new_item)
+
+    def remove(self, row, col):
+        if self.grid[row][col] != 0:
+            item_to_be_removed = self.grid[row][col]
+            self.grid[row][col] = 0
+            self.items.remove(item_to_be_removed)
+
+    def fetch_item(self, row, col):
+        if self.grid[row][col] != 0:
+            item_to_be_fetched = self.grid[row][col]
+            self.grid[row][col] = 0
+            return item_to_be_fetched
+        
+    def drop_item(self, item, x, y):
+        row = int(y / c.cell_length)
+        col = int(x / c.cell_length)
+        self.grid[row][col] = item
+        
+        item.row = row
+        item.col = col
+        item.calc_position()
 
     def contains_ore(self, row, col):
-        if self.item_grid[row][col] != 0 and self.item_grid[row][col].item in [7, 9]:
+        if self.grid[row][col] != 0 and self.grid[row][col].item in [id_map["iron_ore"], id_map["copper_ore"]]:
             return True
         else:
             return False
-
 
 item_manager = ItemManager()

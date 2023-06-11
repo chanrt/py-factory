@@ -2,6 +2,7 @@ from numpy import zeros
 import pygame as pg
 
 from constants import consts as c
+from id_mapping import id_map
 
 
 class World:
@@ -9,8 +10,8 @@ class World:
         self.world = zeros((c.num_cells, c.num_cells), dtype=int)
         self.ore_locations = []
 
-        self.world[15:17, 15:17] = 1
-        self.world[15:17, 20:23] = 2
+        self.world[15:17, 15:17] = id_map["iron_ore"]
+        self.world[15:17, 20:23] = id_map["copper_ore"]
         self.populate_ore_locations()
 
     def populate_ore_locations(self):

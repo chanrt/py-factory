@@ -2,39 +2,33 @@ from numpy import cos, pi, sin
 from time import time
 import pygame as pg
 
-
-from arms import arm_manager as am
 from constants import consts as c
-from furnaces import furnace_manager as fm
-from grid import grid_manager as gm
+from structures import structure_manager as sm
+from id_mapping import id_map
 from items import item_manager as im
 from images import img as i
-from mines import mine_manager as mm
 from world import world as w
 
 
 def game_loop():
     i.convert_alpha()
 
-    im.add_item(5, 5, 3)
-    im.add_item(7, 5, 4)
-    im.add_item(8, 5, 5)
-    im.add_item(9, 5, 6)
+    im.add(5, 5, id_map["iron_ore"])
 
     while True:
         start = time()
         c.clock.tick(c.fps)
 
         keys_pressed = pg.key.get_pressed()
-        played_moved = move_player(keys_pressed)
+        move_player(keys_pressed)
         cell_row, cell_col, cell_x, cell_y = get_pointer_params()
 
         if c.const_state == 1:
             left, _, right = pg.mouse.get_pressed()
             if left:
-                gm.update(c.conveyor_state, (cell_row, cell_col))
+                sm.add(cell_row, cell_col, id_map["conveyor"], c.rot_state)
             if right:
-                gm.destroy((cell_row, cell_col))
+                sm.remove(cell_row, cell_col)
 
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -43,38 +37,16 @@ def game_loop():
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     return
-                
                 if pg.K_0 < event.key < pg.K_6:
                     c.const_state = event.key - pg.K_0
-                
-                # toggles
                 if event.key == pg.K_g:
                     c.toggle_gridlines()
-                if event.key == pg.K_r:
-                    gm.toggle_rotation((cell_row, cell_col))
-                    am.toggle_rotation(cell_row, cell_col)
-                    mm.toggle_rotation(cell_row, cell_col)
-
-                    if c.const_state == 1:
-                        c.cycle_conveyor_state()
-                    if c.const_state == 2:
-                        c.cycle_arm_state()
-                    if c.const_state == 3:
-                        c.cycle_mine_state()
-                    if c.const_state == 4:
-                        c.cycle_furnace_state()
-                if event.key == pg.K_l:
-                    gm.toggle_rotation((cell_row, cell_col), -1)
-                    am.toggle_rotation(cell_row, cell_col, -1)
-
-                    if c.const_state == 1:
-                        c.cycle_conveyor_state(-1)
-                    if c.const_state == 2:
-                        c.cycle_arm_state(-1)
-                    if c.const_state == 3:
-                        c.cycle_mine_state(-1)
-
-                # zoom in/out
+                if event.key == pg.K_r or event.key == pg.K_l:
+                    rotation = 1 if event.key == pg.K_r else -1
+                    if sm.grid[cell_row][cell_col] != 0:
+                        sm.rotate(cell_row, cell_col, rotation)
+                    else:
+                        c.cycle_rot_state(rotation)
                 if event.key == pg.K_m or event.key == pg.K_n:
                     if event.key == pg.K_m:
                         c.cell_length += 5
@@ -82,45 +54,27 @@ def game_loop():
                         c.cell_length -= 5
 
                     i.reload_images()
-                    am.apply_zoom()
                     im.apply_zoom()
 
             if event.type == pg.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    if c.const_state == 2:
-                        gm.update(6, (cell_row, cell_col))
-                        am.add_arm(cell_row, cell_col, c.arm_state)
-                    if c.const_state == 3:
-                        gm.update(10, (cell_row, cell_col))
-                        mm.add_mine(cell_row, cell_col, c.mine_state)
-                    if c.const_state == 4:
-                        gm.update(11, (cell_row, cell_col))
-                        fm.add_furnace(cell_row, cell_col, c.furnace_state)
-                    if c.const_state == 5:
-                        gm.update(12, (cell_row, cell_col))
+                    sm.add(cell_row, cell_col, c.const_state - 1, c.rot_state)
                 if event.button == 3:
-                    im.remove_item(cell_row, cell_col)
-                    gm.destroy((cell_row, cell_col))
-                    am.remove_arm(cell_row, cell_col)
+                    sm.remove(cell_row, cell_col)
+                    im.remove(cell_row, cell_col)
 
         c.screen.fill(c.bg_color)
-
         if c.show_gridlines:
             draw_gridlines()
 
-        im.update()
-        am.update()
-        mm.update()
-        fm.update()
+        sm.update()
+        im.update(sm)
 
         w.render()
-        gm.render()
+        sm.render()
         im.render()
-        am.render()
-        mm.render()
-        fm.render()
 
-        if gm.grid[cell_row, cell_col] == 0:
+        if sm.grid[cell_row][cell_col] == 0:
             draw_action(cell_x, cell_y)
 
         pg.display.flip()
@@ -130,33 +84,25 @@ def game_loop():
 
 
 def move_player(keys_pressed):
-    moved = False
-
     if keys_pressed[pg.K_UP] or keys_pressed[pg.K_w]:
         c.player_y -= c.player_speed * c.dt
-        moved = True
         if c.player_y < 0:
             c.player_y = 0
 
     if keys_pressed[pg.K_DOWN] or keys_pressed[pg.K_s]:
         c.player_y += c.player_speed * c.dt
-        moved = True
         if c.player_y + c.sh > c.num_cells * c.cell_length:
             c.player_y = c.num_cells * c.cell_length - c.sh
 
     if keys_pressed[pg.K_LEFT] or keys_pressed[pg.K_a]:
         c.player_x -= c.player_speed * c.dt
-        moved = True
         if c.player_x < 0:
             c.player_x = 0
 
     if keys_pressed[pg.K_RIGHT] or keys_pressed[pg.K_d]:
         c.player_x += c.player_speed * c.dt
-        moved = True
         if c.player_x + c.sw > c.num_cells * c.cell_length:
             c.player_x = c.num_cells * c.cell_length - c.sw
-
-    return moved
 
 
 def get_pointer_params():
@@ -173,42 +119,34 @@ def draw_action(cell_x, cell_y):
     pg.draw.circle(c.screen, c.action_color, (cell_x + c.cell_length // 2, cell_y + c.cell_length // 2), c.cell_length, 2)
 
     if c.const_state == 1:
-        c.screen.blit(i.images[c.conveyor_state], (cell_x - 1, cell_y - 1))
+        c.screen.blit(i.images[id_map["conveyor"]][c.rot_state], (cell_x - 1, cell_y - 1))
 
     elif c.const_state == 2:
-        c.screen.blit(i.images[6], (cell_x - 1, cell_y - 1))
+        c.screen.blit(i.images[id_map["arm"]], (cell_x - 1, cell_y - 1))
+        angle = ((1 - c.rot_state) * pi / 2) % (2 * pi)
+
         start_x = cell_x + c.cell_length // 2
         start_y = cell_y + c.cell_length // 2
-
-        if c.arm_state == 1:
-            angle = pi / 2
-        elif c.arm_state == 2:
-            angle = 0
-        elif c.arm_state == 3:
-            angle = 3 * pi / 2
-        elif c.arm_state == 4:
-            angle = pi
-
         end_x = start_x + c.cell_length * cos(angle)
         end_y = start_y - c.cell_length * sin(angle)
         pg.draw.line(c.screen, c.arm_color, (start_x, start_y), (end_x, end_y), 2)
 
     elif c.const_state == 3:
-        c.screen.blit(i.images[10], (cell_x - 1, cell_y - 1))
-        draw_sink(cell_x, cell_y, c.mine_state)
+        c.screen.blit(i.images[id_map["mine"]], (cell_x - 1, cell_y - 1))
+        draw_sink(cell_x, cell_y, c.rot_state)
             
     elif c.const_state == 4:
-        c.screen.blit(i.images[11], (cell_x - 1, cell_y - 1))
-        draw_sink(cell_x, cell_y, c.furnace_state)
+        c.screen.blit(i.images[id_map["furnace"]], (cell_x - 1, cell_y - 1))
+        draw_sink(cell_x, cell_y, c.rot_state)
 
     elif c.const_state == 5:
-        c.screen.blit(i.images[12], (cell_x - 1, cell_y - 1))
+        c.screen.blit(i.images[id_map["factory"]], (cell_x - 1, cell_y - 1))
 
 
 def draw_sink(cell_x, cell_y, state):
     translations = [(0, -1), (1, 0), (0, 1), (-1, 0)]
-    x = cell_x + translations[state - 1][0] * c.cell_length - c.player_x + c.cell_length // 2
-    y = cell_y + translations[state - 1][1] * c.cell_length - c.player_y + c.cell_length // 2
+    x = cell_x + translations[state][0] * c.cell_length - c.player_x + c.cell_length // 2
+    y = cell_y + translations[state][1] * c.cell_length - c.player_y + c.cell_length // 2
     pg.draw.circle(c.screen, c.sink_color, (x, y), c.cell_length // 3)
 
 
@@ -221,7 +159,6 @@ def draw_gridlines():
 
 if __name__ == '__main__':
     # this should directly lead to a game
-
     pg.init()
     screen = pg.display.set_mode((0, 0), pg.FULLSCREEN)
     clock = pg.time.Clock()

@@ -1,4 +1,5 @@
 import pygame as pg
+from id_mapping import id_map
 
 
 class Constants:
@@ -14,11 +15,7 @@ class Constants:
     
         self.show_gridlines = True
         self.const_state = 1
-
-        self.conveyor_state = 1
-        self.arm_state = 1
-        self.mine_state = 1
-        self.furnace_state = 1
+        self.rot_state = 0
 
         self.set_colors()
         self.set_speeds()
@@ -33,7 +30,10 @@ class Constants:
         self.working_color = pg.Color("#ffffff")
         self.full_color = pg.Color("#ffa500")
 
-        self.ore_colors = [None, pg.Color("#a19d94"), pg.Color("#b87333")]
+        self.ore_colors = dict([
+            (id_map["iron_ore"], pg.Color("#a19d94")),
+            (id_map["copper_ore"], pg.Color("#b87333")),
+        ])
 
     def set_speeds(self):
         self.player_speed = 200
@@ -56,33 +56,8 @@ class Constants:
     def toggle_gridlines(self):
         self.show_gridlines = not self.show_gridlines
 
-    def cycle_conveyor_state(self, direction = 1):
-        self.conveyor_state += direction
-        if self.conveyor_state > 4:
-            self.conveyor_state = 1
-        elif self.conveyor_state < 1:
-            self.conveyor_state = 4
-
-    def cycle_arm_state(self, direction = 1):
-        self.arm_state += direction
-        if self.arm_state > 4:
-            self.arm_state = 1
-        elif self.arm_state < 1:
-            self.arm_state = 4
-
-    def cycle_mine_state(self, direction = 1):
-        self.mine_state += direction
-        if self.mine_state > 4:
-            self.mine_state = 1
-        elif self.mine_state < 1:
-            self.mine_state = 4
-
-    def cycle_furnace_state(self, direction = 1):
-        self.furnace_state += direction
-        if self.furnace_state > 4:
-            self.furnace_state = 1
-        elif self.furnace_state < 1:
-            self.furnace_state = 4
+    def cycle_rot_state(self, direction):
+        self.rot_state = (self.rot_state + direction) % 4
 
 
 consts = Constants()
