@@ -8,7 +8,7 @@ class Constants:
         self.dt = 1.0 / self.fps
 
         self.num_cells = 100
-        self.cell_length = 25
+        self.cell_length = 35
 
         self.player_x = 0
         self.player_y = 0
@@ -26,7 +26,7 @@ class Constants:
         self.arm_color = pg.Color("#ffff00")
         self.action_color = pg.Color("#00ff00")
         self.source_color = pg.Color("#ff0000")
-        self.target_color = pg.Color("#0000ff")
+        self.target_color = pg.Color("#2196f3")
         self.working_color = pg.Color("#ffffff")
         self.full_color = pg.Color("#ffa500")
 

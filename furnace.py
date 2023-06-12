@@ -10,9 +10,8 @@ class Furnace:
     def __init__(self, row, col, direction):
         self.row = row
         self.col = col
-        self.x = col * c.cell_length
-        self.y = row * c.cell_length
         self.direction = direction
+        self.calc_position()
         self.init_target()
 
         self.smelting = None
@@ -46,7 +45,7 @@ class Furnace:
             pg.draw.rect(c.screen, c.full_color, (self.x - c.player_x, self.y - c.player_y, c.cell_length, c.cell_length), 3)
 
     def render_tooltip(self):
-        pg.draw.circle(c.screen, c.target_color, (self.target_col * c.cell_length - c.player_x + c.cell_length // 2, self.target_row * c.cell_length - c.player_y + c.cell_length // 2), 5)
+        pg.draw.rect(c.screen, c.target_color, (self.target_col * c.cell_length - c.player_x, self.target_row * c.cell_length - c.player_y, c.cell_length, c.cell_length), 3)
 
     def rotate(self, direction):
         self.direction = (self.direction + direction) % 4
@@ -65,3 +64,7 @@ class Furnace:
         elif self.direction == 3:
             self.target_row = self.row
             self.target_col = self.col - 1
+
+    def calc_position(self):
+        self.x = self.col * c.cell_length
+        self.y = self.row * c.cell_length

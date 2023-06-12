@@ -38,6 +38,9 @@ class StructureManager:
             elif structure_type == id_map["factory"]:
                 new_structure = Factory(row, col, direction)
 
+            if im.grid[row][col] != 0:
+                im.remove(row, col)
+
             self.grid[row][col] = new_structure
             self.structures.append(new_structure)
 

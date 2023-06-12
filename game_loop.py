@@ -18,8 +18,6 @@ from world import world as w
 def game_loop():
     i.convert_alpha()
 
-    im.add(5, 5, id_map["iron_ore"])
-
     while True:
         start = time()
         c.clock.tick(c.fps)
@@ -126,7 +124,7 @@ def get_pointer_params():
 
 
 def draw_action(cell_x, cell_y):
-    pg.draw.circle(c.screen, c.action_color, (cell_x + c.cell_length // 2, cell_y + c.cell_length // 2), c.cell_length, 2)
+    pg.draw.circle(c.screen, c.action_color, (cell_x + c.cell_length // 2, cell_y + c.cell_length // 2), 4 * c.cell_length // 5, 2)
 
     if c.const_state == 1:
         c.screen.blit(i.images[id_map["conveyor"]][c.rot_state], (cell_x - 1, cell_y - 1))
@@ -139,25 +137,35 @@ def draw_action(cell_x, cell_y):
         start_y = cell_y + c.cell_length // 2
         end_x = start_x + c.cell_length * cos(angle)
         end_y = start_y - c.cell_length * sin(angle)
+
         pg.draw.line(c.screen, c.arm_color, (start_x, start_y), (end_x, end_y), 2)
+        draw_source(cell_x, cell_y, (c.rot_state + 2) % 4)
+        draw_target(cell_x, cell_y, (c.rot_state + 2) % 4)
 
     elif c.const_state == 3:
         c.screen.blit(i.images[id_map["mine"]], (cell_x - 1, cell_y - 1))
-        draw_target(cell_x, cell_y, c.rot_state)
-            
+        draw_target(cell_x, cell_y, c.rot_state)        
     elif c.const_state == 4:
         c.screen.blit(i.images[id_map["furnace"]], (cell_x - 1, cell_y - 1))
         draw_target(cell_x, cell_y, c.rot_state)
-
     elif c.const_state == 5:
         c.screen.blit(i.images[id_map["factory"]], (cell_x - 1, cell_y - 1))
+        draw_target(cell_x, cell_y, c.rot_state)
 
 
 def draw_target(cell_x, cell_y, state):
     translations = [(0, -1), (1, 0), (0, 1), (-1, 0)]
-    x = cell_x + translations[state][0] * c.cell_length - c.player_x + c.cell_length // 2
-    y = cell_y + translations[state][1] * c.cell_length - c.player_y + c.cell_length // 2
-    pg.draw.circle(c.screen, c.target_color, (x, y), 5)
+    x = cell_x + translations[state][0] * c.cell_length - c.player_x
+    y = cell_y + translations[state][1] * c.cell_length - c.player_y
+    # pg.draw.circle(c.screen, c.target_color, (x, y), 5)
+    pg.draw.rect(c.screen, c.target_color, (x, y, c.cell_length, c.cell_length), 3)
+
+
+def draw_source(source_x, source_y, state):
+    translations = [(0, 1), (-1, 0), (0, -1), (1, 0)]
+    x = source_x + translations[state][0] * c.cell_length - c.player_x
+    y = source_y + translations[state][1] * c.cell_length - c.player_y
+    pg.draw.rect(c.screen, c.source_color, (x, y, c.cell_length, c.cell_length), 3)
 
 
 def draw_gridlines():

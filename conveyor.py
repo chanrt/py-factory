@@ -7,9 +7,8 @@ class Conveyor:
     def __init__(self, row, col, direction):
         self.row = row
         self.col = col
-        self.x = col * c.cell_length
-        self.y = row * c.cell_length
         self.direction = direction
+        self.calc_position()
 
     def update(self, sm, im):
         pass
@@ -22,3 +21,7 @@ class Conveyor:
 
     def rotate(self, direction):
         self.direction = (self.direction + direction) % 4
+
+    def calc_position(self):
+        self.x = self.col * c.cell_length
+        self.y = self.row * c.cell_length

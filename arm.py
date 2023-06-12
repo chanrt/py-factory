@@ -2,6 +2,7 @@ import pygame as pg
 from numpy import cos, pi, sin
 
 from constants import consts as c
+from factory import Factory
 from furnace import Furnace
 from id_mapping import id_map
 from images import img as i
@@ -24,12 +25,16 @@ class Arm:
                     if isinstance(sm.grid[self.target_row][self.target_col], Furnace):
                         if im.contains_ore(self.source_row, self.source_col):
                             self.caught_item = im.fetch_item(self.source_row, self.source_col)
+                    elif isinstance(sm.grid[self.target_row][self.target_col], Factory):
+                        factory = sm.grid[self.target_row][self.target_col]
+                        if factory.will_accept_item(im.grid[self.source_row][self.source_col].item):
+                            self.caught_item = im.fetch_item(self.source_row, self.source_col)
                     else:
                         self.caught_item = im.fetch_item(self.source_row, self.source_col)
             else:
                 self.angle += c.arm_speed * c.dt
                 self.constrain_angle()
-                if abs(self.angle - self.start_angle) < c.arm_speed * c.dt:
+                if abs(self.angle - self.start_angle) % (2 * pi) < c.arm_speed * c.dt:
                     self.angle = self.start_angle
         else:
             self.angle -= c.arm_speed * c.dt
@@ -37,7 +42,7 @@ class Arm:
             self.caught_item.x = self.end_x
             self.caught_item.y = self.end_y
 
-            if abs(self.angle - self.stop_angle) < c.arm_speed * c.dt:
+            if abs(self.angle - self.stop_angle) % (2 * pi) < c.arm_speed * c.dt:
                 if im.grid[self.target_row][self.target_col] == 0:
                     im.drop_item(self.caught_item, self.end_x, self.end_y)
                     self.caught_item = None      
@@ -47,8 +52,11 @@ class Arm:
         pg.draw.line(c.screen, c.arm_color, (self.pivot_x, self.pivot_y), (self.end_x, self.end_y), 2)
 
     def render_tooltip(self):
-        pg.draw.circle(c.screen, c.source_color, (self.source_col * c.cell_length - c.player_x + c.cell_length // 2, self.source_row * c.cell_length - c.player_y + c.cell_length // 2), 5, 2)
-        pg.draw.circle(c.screen, c.target_color, (self.target_col * c.cell_length - c.player_x + c.cell_length // 2, self.target_row * c.cell_length - c.player_y + c.cell_length // 2), 5)
+        pg.draw.rect(c.screen, c.source_color, (self.source_col * c.cell_length - c.player_x, self.source_row * c.cell_length - c.player_y, c.cell_length, c.cell_length), 3)
+        pg.draw.rect(c.screen, c.target_color, (self.target_col * c.cell_length - c.player_x, self.target_row * c.cell_length - c.player_y, c.cell_length, c.cell_length), 3)
+
+        # pg.draw.circle(c.screen, c.source_color, (self.source_col * c.cell_length - c.player_x + c.cell_length // 2, self.source_row * c.cell_length - c.player_y + c.cell_length // 2), 5, 2)
+        # pg.draw.circle(c.screen, c.target_color, (self.target_col * c.cell_length - c.player_x + c.cell_length // 2, self.target_row * c.cell_length - c.player_y + c.cell_length // 2), 5)
 
     def rotate(self, direction):
         self.direction = (self.direction + direction) % 4

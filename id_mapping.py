@@ -10,3 +10,5 @@ id_map["iron"] = 5
 id_map["iron_ore"] = 6
 id_map["copper"] = 7
 id_map["copper_ore"] = 8
+
+id_map["gear"] = 9

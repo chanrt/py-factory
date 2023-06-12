@@ -25,6 +25,8 @@ class Images:
         self.images.append(self.load_scale_image("sprites/copper.png"))
         self.images.append(self.load_scale_image("sprites/copper_ore.png"))
 
+        self.images.append(self.load_scale_image("sprites/gear.png"))
+
     def load_scale_image(self, path):
         raw_image = pg.image.load(path)
         scaled_image = pg.transform.smoothscale(raw_image, (c.cell_length, c.cell_length))

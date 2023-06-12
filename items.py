@@ -59,13 +59,13 @@ class ItemManager:
             if not item.caught and isinstance(sm.grid[old_row][old_col], Conveyor):
                 conveyor_direction = sm.grid[old_row][old_col].direction
 
-                if conveyor_direction == 0 and self.grid[old_row - 1][old_col] == 0:
+                if conveyor_direction == 0 and self.grid[old_row - 1][old_col] == 0 and sm.item_can_be_placed(old_row - 1, old_col):
                     item.move("up")
-                elif conveyor_direction == 1 and self.grid[old_row][old_col + 1] == 0:
+                elif conveyor_direction == 1 and self.grid[old_row][old_col + 1] == 0 and sm.item_can_be_placed(old_row, old_col + 1):
                     item.move("right")
-                elif conveyor_direction == 2 and self.grid[old_row + 1][old_col] == 0:
+                elif conveyor_direction == 2 and self.grid[old_row + 1][old_col] == 0 and sm.item_can_be_placed(old_row + 1, old_col):
                     item.move("down")
-                elif conveyor_direction == 3 and self.grid[old_row][old_col - 1] == 0:
+                elif conveyor_direction == 3 and self.grid[old_row][old_col - 1] == 0 and sm.item_can_be_placed(old_row, old_col - 1):
                     item.move("left")
 
                 new_row, new_col = item.row, item.col
