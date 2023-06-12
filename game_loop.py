@@ -3,10 +3,11 @@ from time import time
 import pygame as pg
 
 from constants import consts as c
-from structures import structure_manager as sm
 from id_mapping import id_map
 from items import item_manager as im
 from images import img as i
+from music_player import music_player as mp
+from structures import structure_manager as sm
 from world import world as w
 
 
@@ -60,7 +61,7 @@ def game_loop():
                     sm.add(cell_row, cell_col, c.const_state - 1, c.rot_state)
                 if event.button == 3:
                     if im.grid[cell_row][cell_col] != 0:
-                        im.remove(cell_row, cell_col)
+                        im.remove(cell_row, cell_col, True)
                     elif sm.grid[cell_row][cell_col] != 0:
                         sm.remove(cell_row, cell_col)
 
@@ -70,6 +71,7 @@ def game_loop():
 
         sm.update()
         im.update(sm)
+        mp.check_next_music()
 
         w.render()
         sm.render()
@@ -150,15 +152,15 @@ def draw_action(cell_x, cell_y):
 
 def draw_target(cell_x, cell_y, state):
     translations = [(0, -1), (1, 0), (0, 1), (-1, 0)]
-    x = cell_x + translations[state][0] * c.cell_length - c.player_x
-    y = cell_y + translations[state][1] * c.cell_length - c.player_y
+    x = cell_x + translations[state][0] * c.cell_length
+    y = cell_y + translations[state][1] * c.cell_length
     pg.draw.rect(c.screen, c.target_color, (x, y, c.cell_length, c.cell_length), 3)
 
 
 def draw_source(source_x, source_y, state):
     translations = [(0, 1), (-1, 0), (0, -1), (1, 0)]
-    x = source_x + translations[state][0] * c.cell_length - c.player_x
-    y = source_y + translations[state][1] * c.cell_length - c.player_y
+    x = source_x + translations[state][0] * c.cell_length
+    y = source_y + translations[state][1] * c.cell_length
     pg.draw.rect(c.screen, c.source_color, (x, y, c.cell_length, c.cell_length), 3)
 
 

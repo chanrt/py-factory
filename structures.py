@@ -31,12 +31,16 @@ class StructureManager:
                 new_structure = Conveyor(row, col, direction)
             elif structure_type == id_map["arm"]:
                 new_structure = Arm(row, col, direction)
+                c.arm_placed.play()
             elif structure_type == id_map["mine"]:
                 new_structure = Mine(row, col, direction)
+                c.mine_placed.play()
             elif structure_type == id_map["furnace"]:
                 new_structure = Furnace(row, col, direction)
+                c.furnace_placed.play()
             elif structure_type == id_map["factory"]:
                 new_structure = Factory(row, col, direction)
+                c.factory_placed.play()
 
             if im.grid[row][col] != 0:
                 im.remove(row, col)
@@ -50,6 +54,9 @@ class StructureManager:
 
             if isinstance(structure_to_be_removed, Arm):
                 structure_to_be_removed.safely_drop_item(im)
+
+            if not isinstance(structure_to_be_removed, Conveyor):
+                c.structure_destroy.play()
 
             self.grid[row][col] = 0
             self.structures.remove(structure_to_be_removed)

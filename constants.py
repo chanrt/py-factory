@@ -1,3 +1,4 @@
+from os import path
 import pygame as pg
 from id_mapping import id_map
 
@@ -16,13 +17,15 @@ class Constants:
         self.show_gridlines = True
         self.const_state = 1
         self.rot_state = 0
+        self.music_padding = 5
 
         self.set_colors()
         self.set_speeds()
+        self.load_sounds()
 
     def set_colors(self):
         self.bg_color = pg.Color("#222222")
-        self.grid_color = pg.Color("#aaaaaa")
+        self.grid_color = pg.Color("#999999")
         self.arm_color = pg.Color("#ffff00")
         self.action_color = pg.Color("#00ff00")
         self.source_color = pg.Color("#ff0000")
@@ -37,11 +40,24 @@ class Constants:
 
     def set_speeds(self):
         self.player_speed = 200
-        self.conveyor_speed = 25
+        self.conveyor_speed = self.cell_length
         self.arm_speed = 90 * 3.14 / 180
 
         self.mine_time = 2
         self.smelt_time = 3
+
+    def load_sounds(self):
+        pg.init()
+        root = "sounds"
+        self.structure_placed = pg.mixer.Sound(path.join(root, "structure_placed.wav"))
+        self.arm_placed = pg.mixer.Sound(path.join(root, "arm_placed.wav")) 
+        self.mine_placed = pg.mixer.Sound(path.join(root, "mine_placed.wav"))
+        self.furnace_placed = pg.mixer.Sound(path.join(root, "furnace_placed.wav"))
+        self.factory_placed = pg.mixer.Sound(path.join(root, "factory_placed.wav"))
+
+        self.item_pick_up = pg.mixer.Sound(path.join(root, "item_pick_up.wav"))
+        self.structure_destroy = pg.mixer.Sound(path.join(root, "structure_destroy.mp3"))
+        self.structure_destroy.set_volume(0.5)
 
     def set_dt(self, dt):
         self.dt = dt

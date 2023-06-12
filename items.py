@@ -82,11 +82,14 @@ class ItemManager:
         self.grid[row][col] = new_item
         self.items.append(new_item)
 
-    def remove(self, row, col):
+    def remove(self, row, col, by_player = False):
         if self.grid[row][col] != 0:
             item_to_be_removed = self.grid[row][col]
             self.grid[row][col] = 0
             self.items.remove(item_to_be_removed)
+
+            if by_player:
+                c.item_pick_up.play()
 
     def fetch_item(self, row, col):
         if self.grid[row][col] != 0:

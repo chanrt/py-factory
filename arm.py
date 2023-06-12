@@ -39,12 +39,12 @@ class Arm:
         else:
             self.angle -= c.arm_speed * c.dt
             self.constrain_angle()
-            self.caught_item.x = self.end_x
-            self.caught_item.y = self.end_y
+            self.caught_item.x = self.end_x + c.player_x
+            self.caught_item.y = self.end_y + c.player_y
 
             if abs(self.angle - self.stop_angle) % (2 * pi) < c.arm_speed * c.dt:
                 if im.grid[self.target_row][self.target_col] == 0:
-                    im.drop_item(self.caught_item, self.end_x, self.end_y)
+                    im.drop_item(self.caught_item, self.end_x + c.player_x, self.end_y + c.player_y)
                     self.caught_item = None      
 
     def render(self):
