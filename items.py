@@ -56,15 +56,22 @@ class ItemManager:
 
             if not item.caught and (isinstance(sm.grid[old_row][old_col], Conveyor) or isinstance(sm.grid[old_row][old_col], ConveyorUnderground)):
                 conveyor_direction = sm.grid[old_row][old_col].direction
+                can_move_ahead = True
 
-                if conveyor_direction == 0 and self.grid[old_row - 1][old_col] == 0 and sm.item_can_be_placed(old_row - 1, old_col):
-                    item.move("up")
-                elif conveyor_direction == 1 and self.grid[old_row][old_col + 1] == 0 and sm.item_can_be_placed(old_row, old_col + 1):
-                    item.move("right")
-                elif conveyor_direction == 2 and self.grid[old_row + 1][old_col] == 0 and sm.item_can_be_placed(old_row + 1, old_col):
-                    item.move("down")
-                elif conveyor_direction == 3 and self.grid[old_row][old_col - 1] == 0 and sm.item_can_be_placed(old_row, old_col - 1):
-                    item.move("left")
+                if isinstance(sm.grid[old_row][old_col], ConveyorUnderground):
+                    conveyor_ug = sm.grid[old_row][old_col]
+                    if not conveyor_ug.can_accept_item(old_row, old_col):
+                        can_move_ahead = False
+
+                if can_move_ahead:
+                    if conveyor_direction == 0 and self.grid[old_row - 1][old_col] == 0 and sm.item_can_be_placed(old_row - 1, old_col):
+                        item.move("up")
+                    elif conveyor_direction == 1 and self.grid[old_row][old_col + 1] == 0 and sm.item_can_be_placed(old_row, old_col + 1):
+                        item.move("right")
+                    elif conveyor_direction == 2 and self.grid[old_row + 1][old_col] == 0 and sm.item_can_be_placed(old_row + 1, old_col):
+                        item.move("down")
+                    elif conveyor_direction == 3 and self.grid[old_row][old_col - 1] == 0 and sm.item_can_be_placed(old_row, old_col - 1):
+                        item.move("left")
 
                 new_row, new_col = item.row, item.col
                 if old_row != new_row or old_col != new_col:

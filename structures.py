@@ -64,6 +64,7 @@ class StructureManager:
                 c.structure_destroy.play()
 
             if isinstance(structure_to_be_removed, ConveyorUnderground):
+                self.grid[structure_to_be_removed.source_row][structure_to_be_removed.source_col] = 0
                 self.grid[structure_to_be_removed.target_row][structure_to_be_removed.target_col] = 0
 
             self.grid[row][col] = 0

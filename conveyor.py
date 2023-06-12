@@ -35,11 +35,31 @@ class ConveyorUnderground:
         self.source_col = col
         self.direction = direction
         self.length = c.ug_state
+
         self.init_target()
         self.calc_position()
+        self.storage = []
+        self.timers = []
 
     def update(self, sm, im):
-        pass
+        # decrease timers of all items in storage
+        for i in range(len(self.timers)):
+            self.timers[i] -= c.dt
+
+        # check if the first item in storage is ready to come out
+        if len(self.storage) > 0:
+            if self.timers[0] <= 0:
+                if im.grid[self.target_row][self.target_col] == 0 and sm.item_can_be_placed(self.target_row, self.target_col):
+                    im.add(self.target_row, self.target_col, self.storage[0])
+                    self.storage.pop(0)
+                    self.timers.pop(0)
+
+        # check for new items being added
+        if im.grid[self.source_row][self.source_col] != 0 and len(self.storage) < self.length:
+            item = im.grid[self.source_row][self.source_col].item
+            im.remove(self.source_row, self.source_col)
+            self.storage.append(item)
+            self.timers.append(self.length * c.cell_length / c.conveyor_speed)
 
     def render(self):
         c.screen.blit(i.images[id_map["conveyor_underground"]][self.direction], (self.source_x - c.player_x, self.source_y - c.player_y))
@@ -71,3 +91,11 @@ class ConveyorUnderground:
         self.source_y = self.source_row * c.cell_length
         self.target_x = self.target_col * c.cell_length
         self.target_y = self.target_row * c.cell_length
+
+    def can_accept_item(self, row, col):
+        if row != self.source_row or col != self.source_col:
+            return True
+        elif len(self.storage) == self.length:
+            return False
+        else:
+            return True
