@@ -17,6 +17,8 @@ class Constants:
         self.show_gridlines = True
         self.const_state = 1
         self.rot_state = 0
+        self.ug_state = 3
+
         self.music_padding = 5
 
         self.set_colors()
@@ -28,7 +30,7 @@ class Constants:
         self.grid_color = pg.Color("#999999")
         self.arm_color = pg.Color("#ffff00")
         self.action_color = pg.Color("#00ff00")
-        self.source_color = pg.Color("#ff0000")
+        self.source_color = pg.Color("#ff3131")
         self.target_color = pg.Color("#2196f3")
         self.working_color = pg.Color("#ffffff")
         self.full_color = pg.Color("#ffa500")
@@ -59,6 +61,8 @@ class Constants:
         self.structure_destroy = pg.mixer.Sound(path.join(root, "structure_destroy.mp3"))
         self.structure_destroy.set_volume(0.5)
 
+        self.rotate = pg.mixer.Sound(path.join(root, "rotate.wav"))
+
     def set_dt(self, dt):
         self.dt = dt
 
@@ -74,6 +78,13 @@ class Constants:
 
     def cycle_rot_state(self, direction):
         self.rot_state = (self.rot_state + direction) % 4
+
+    def cycle_ug_state(self, direction):
+        self.ug_state += direction
+        if self.ug_state < 2:
+            self.ug_state = 4
+        elif self.ug_state > 4:
+            self.ug_state = 2
 
 
 consts = Constants()

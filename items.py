@@ -1,7 +1,5 @@
-import numpy as np
-
 from constants import consts as c
-from conveyor import Conveyor
+from conveyor import Conveyor, ConveyorUnderground
 from id_mapping import id_map
 from images import img as i
 
@@ -56,7 +54,7 @@ class ItemManager:
         for item in self.items:
             old_row, old_col = item.row, item.col
 
-            if not item.caught and isinstance(sm.grid[old_row][old_col], Conveyor):
+            if not item.caught and (isinstance(sm.grid[old_row][old_col], Conveyor) or isinstance(sm.grid[old_row][old_col], ConveyorUnderground)):
                 conveyor_direction = sm.grid[old_row][old_col].direction
 
                 if conveyor_direction == 0 and self.grid[old_row - 1][old_col] == 0 and sm.item_can_be_placed(old_row - 1, old_col):

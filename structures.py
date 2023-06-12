@@ -1,5 +1,5 @@
 from arm import Arm
-from conveyor import Conveyor
+from conveyor import Conveyor, ConveyorUnderground
 from factory import Factory
 from furnace import Furnace
 from mine import Mine
@@ -29,6 +29,8 @@ class StructureManager:
         if self.grid[row][col] == 0:
             if structure_type == id_map["conveyor"]:
                 new_structure = Conveyor(row, col, direction)
+            elif structure_type == id_map["conveyor_underground"]:
+                new_structure = ConveyorUnderground(row, col, direction)
             elif structure_type == id_map["arm"]:
                 new_structure = Arm(row, col, direction)
                 c.arm_placed.play()
@@ -46,6 +48,9 @@ class StructureManager:
                 im.remove(row, col)
 
             self.grid[row][col] = new_structure
+            if isinstance(new_structure, ConveyorUnderground):
+                self.grid[new_structure.target_row][new_structure.target_col] = new_structure
+
             self.structures.append(new_structure)
 
     def remove(self, row, col):
@@ -55,18 +60,23 @@ class StructureManager:
             if isinstance(structure_to_be_removed, Arm):
                 structure_to_be_removed.safely_drop_item(im)
 
-            if not isinstance(structure_to_be_removed, Conveyor):
+            if not isinstance(structure_to_be_removed, Conveyor) and not isinstance(structure_to_be_removed, ConveyorUnderground):
                 c.structure_destroy.play()
+
+            if isinstance(structure_to_be_removed, ConveyorUnderground):
+                self.grid[structure_to_be_removed.target_row][structure_to_be_removed.target_col] = 0
 
             self.grid[row][col] = 0
             self.structures.remove(structure_to_be_removed)
 
     def rotate(self, row, col, direction = 1):
         if self.grid[row][col] != 0:
-            self.grid[row][col].rotate(direction)
+            if not isinstance(self.grid[row][col], ConveyorUnderground):
+                self.grid[row][col].rotate(direction)
+                c.rotate.play()
 
     def item_can_be_placed(self, row, col):
-        return self.grid[row][col] == 0 or isinstance(self.grid[row][col], Conveyor)
+        return self.grid[row][col] == 0 or isinstance(self.grid[row][col], Conveyor) or isinstance(self.grid[row][col], ConveyorUnderground)
     
     def apply_zoom(self):
         for structure in self.structures:

@@ -36,7 +36,7 @@ def game_loop():
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     return
-                if pg.K_0 < event.key < pg.K_6:
+                if pg.K_0 < event.key < pg.K_7:
                     c.const_state = event.key - pg.K_0
                 if event.key == pg.K_g:
                     c.toggle_gridlines()
@@ -46,6 +46,10 @@ def game_loop():
                         sm.rotate(cell_row, cell_col, rotation)
                     else:
                         c.cycle_rot_state(rotation)
+                if event.key == pg.K_LSHIFT or event.key == pg.K_RSHIFT:
+                    c.cycle_ug_state(1)
+                if event.key == pg.K_LCTRL or event.key == pg.K_RCTRL:
+                    c.cycle_ug_state(-1)
                 if event.key == pg.K_m or event.key == pg.K_n:
                     if event.key == pg.K_m:
                         c.cell_length += 5
@@ -126,7 +130,15 @@ def draw_action(cell_x, cell_y):
     if c.const_state == 1:
         c.screen.blit(i.images[id_map["conveyor"]][c.rot_state], (cell_x - 1, cell_y - 1))
 
-    elif c.const_state == 2:
+    if c.const_state == 2:
+        c.screen.blit(i.images[id_map["conveyor_underground"]][c.rot_state], (cell_x - 1, cell_y - 1))
+        translations = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+        x = cell_x + translations[c.rot_state][0] * c.ug_state * c.cell_length
+        y = cell_y - translations[c.rot_state][1] * c.ug_state * c.cell_length
+        c.screen.blit(i.images[id_map["conveyor_underground"]][c.rot_state + 4], (x, y))
+        pg.draw.circle(c.screen, c.action_color, (x + c.cell_length // 2, y + c.cell_length // 2), 4 * c.cell_length // 5, 2)
+
+    elif c.const_state == 3:
         c.screen.blit(i.images[id_map["arm"]], (cell_x - 1, cell_y - 1))
         angle = ((1 - c.rot_state) * pi / 2) % (2 * pi)
 
@@ -139,13 +151,13 @@ def draw_action(cell_x, cell_y):
         draw_source(cell_x, cell_y, (c.rot_state + 2) % 4)
         draw_target(cell_x, cell_y, (c.rot_state + 2) % 4)
 
-    elif c.const_state == 3:
+    elif c.const_state == 4:
         c.screen.blit(i.images[id_map["mine"]], (cell_x - 1, cell_y - 1))
         draw_target(cell_x, cell_y, c.rot_state)        
-    elif c.const_state == 4:
+    elif c.const_state == 5:
         c.screen.blit(i.images[id_map["furnace"]], (cell_x - 1, cell_y - 1))
         draw_target(cell_x, cell_y, c.rot_state)
-    elif c.const_state == 5:
+    elif c.const_state == 6:
         c.screen.blit(i.images[id_map["factory"]], (cell_x - 1, cell_y - 1))
         draw_target(cell_x, cell_y, c.rot_state)
 

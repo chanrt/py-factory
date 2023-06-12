@@ -15,6 +15,20 @@ class Images:
             scaled_image = pg.transform.smoothscale(rotated_image, (c.cell_length, c.cell_length))
             conveyor_list.append(scaled_image)
         self.images.append(conveyor_list)
+
+        conveyor_underground_list = []
+        for direction in range(4):
+            raw_image = pg.image.load("sprites/conveyor_ug_source.png")
+            rotated_image = pg.transform.rotate(raw_image, -direction * 90)
+            scaled_image = pg.transform.smoothscale(rotated_image, (c.cell_length, c.cell_length))
+            conveyor_underground_list.append(scaled_image)
+        for direction in range(4):
+            raw_image = pg.image.load("sprites/conveyor_ug_target.png")
+            rotated_image = pg.transform.rotate(raw_image, -direction * 90)
+            scaled_image = pg.transform.smoothscale(rotated_image, (c.cell_length, c.cell_length))
+            conveyor_underground_list.append(scaled_image)
+        self.images.append(conveyor_underground_list)
+
         self.images.append(self.load_scale_image("sprites/arm.png"))
         self.images.append(self.load_scale_image("sprites/mine.png"))
         self.images.append(self.load_scale_image("sprites/furnace.png"))
