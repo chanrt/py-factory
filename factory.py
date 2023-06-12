@@ -14,7 +14,7 @@ class Factory:
         self.calc_position()
         self.init_target()
 
-        self.recipe = 0
+        self.recipe = None
         self.storage = []
         self.progress = 0
         
@@ -46,6 +46,11 @@ class Factory:
     def render_tooltip(self):
         pg.draw.rect(c.screen, c.target_color, (self.target_col * c.cell_length - c.player_x, self.target_row * c.cell_length - c.player_y, c.cell_length, c.cell_length), 3)
 
+    def set_recipe(self, recipe):
+        self.recipe = recipe
+        self.storage = []
+        self.progress = 0
+    
     def will_accept_item(self, item):
         if self.recipe is None:
             return False
@@ -60,6 +65,9 @@ class Factory:
             return False
         
     def recipe_fulfilled(self):
+        if self.recipe is None:
+            return False
+        
         for item in recipes[self.recipe]["inputs"]:
             num_in_storage = sum([1 for stored_item in self.storage if stored_item == item])
 

@@ -140,7 +140,7 @@ def draw_action(cell_x, cell_y):
 
     elif c.const_state == 3:
         c.screen.blit(i.images[id_map["arm"]], (cell_x - 1, cell_y - 1))
-        angle = ((1 - c.rot_state) * pi / 2) % (2 * pi)
+        angle = ((1 - (c.rot_state + 2) % 4) * pi / 2) % (2 * pi)
 
         start_x = cell_x + c.cell_length // 2
         start_y = cell_y + c.cell_length // 2
@@ -148,8 +148,8 @@ def draw_action(cell_x, cell_y):
         end_y = start_y - c.cell_length * sin(angle)
 
         pg.draw.line(c.screen, c.arm_color, (start_x, start_y), (end_x, end_y), 2)
-        draw_source(cell_x, cell_y, (c.rot_state + 2) % 4)
-        draw_target(cell_x, cell_y, (c.rot_state + 2) % 4)
+        draw_source(cell_x, cell_y, c.rot_state)
+        draw_target(cell_x, cell_y, c.rot_state)
 
     elif c.const_state == 4:
         c.screen.blit(i.images[id_map["mine"]], (cell_x - 1, cell_y - 1))

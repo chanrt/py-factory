@@ -13,3 +13,5 @@ id_map["copper"] = 8
 id_map["copper_ore"] = 9
 
 id_map["gear"] = 10
+id_map["copper_wire"] = 11
+id_map["circuit"] = 12

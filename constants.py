@@ -70,6 +70,9 @@ class Constants:
         self.screen = screen
         self.sw, self.sh = self.screen.get_size()
 
+        self.button_width = self.sw / 5
+        self.button_height = self.sh / 10
+
     def set_clock(self, clock):
         self.clock = clock
 

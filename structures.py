@@ -7,6 +7,7 @@ from mine import Mine
 from constants import consts as c
 from id_mapping import id_map
 from items import item_manager as im
+from recipe_selection import select_recipe
 
 
 class StructureManager:
@@ -44,7 +45,7 @@ class StructureManager:
                 new_structure = Factory(row, col, direction)
                 c.factory_placed.play()
 
-            if im.grid[row][col] != 0:
+            if im.grid[row][col] != 0 and not isinstance(new_structure, Conveyor):
                 im.remove(row, col)
 
             self.grid[row][col] = new_structure
@@ -52,6 +53,11 @@ class StructureManager:
                 self.grid[new_structure.target_row][new_structure.target_col] = new_structure
 
             self.structures.append(new_structure)
+
+        elif isinstance(self.grid[row][col], Factory):
+            factory = self.grid[row][col]
+            selected_recipe = select_recipe()
+            factory.set_recipe(selected_recipe)
 
     def remove(self, row, col):
         if self.grid[row][col] != 0:

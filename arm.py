@@ -12,7 +12,7 @@ class Arm:
     def __init__(self, row, col, direction):
         self.row = row
         self.col = col
-        self.direction = direction
+        self.direction = (direction + 2) % 4
         self.calc_position()
         self.init_direction()
 
