@@ -30,6 +30,7 @@ class Constants:
         self.grid_color = pg.Color("#999999")
         self.arm_color = pg.Color("#ffff00")
         self.action_color = pg.Color("#00ff00")
+        self.error_color = pg.Color("#ff0000")
         self.source_color = pg.Color("#ff3131")
         self.target_color = pg.Color("#2196f3")
         self.working_color = pg.Color("#ffffff")

@@ -41,6 +41,7 @@ class Images:
 
         self.images.append(self.load_scale_image("sprites/gear.png"))
         self.images.append(self.load_scale_image("sprites/copper_wire.png"))
+        self.images.append(self.load_scale_image("sprites/circuit.png"))
 
     def load_scale_image(self, path):
         raw_image = pg.image.load(path)

@@ -42,6 +42,8 @@ class Factory:
                 pg.draw.rect(c.screen, c.working_color, (self.x - c.player_x, self.y - c.player_y, c.cell_length, c.cell_length), 2)
             elif self.progress >= recipes[self.recipe]["time"]:
                 pg.draw.rect(c.screen, c.full_color, (self.x - c.player_x, self.y - c.player_y, c.cell_length, c.cell_length), 3)
+        else:
+            pg.draw.circle(c.screen, c.error_color, (self.x - c.player_x + c.cell_length // 2, self.y - c.player_y + c.cell_length // 2), 4 * c.cell_length // 5, 2)
 
     def render_tooltip(self):
         pg.draw.rect(c.screen, c.target_color, (self.target_col * c.cell_length - c.player_x, self.target_row * c.cell_length - c.player_y, c.cell_length, c.cell_length), 3)
