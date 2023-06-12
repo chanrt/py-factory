@@ -2,11 +2,6 @@ from numpy import cos, pi, sin
 from time import time
 import pygame as pg
 
-from arm import Arm
-from conveyor import Conveyor
-from furnace import Furnace
-from mine import Mine
-
 from constants import consts as c
 from structures import structure_manager as sm
 from id_mapping import id_map
@@ -157,7 +152,6 @@ def draw_target(cell_x, cell_y, state):
     translations = [(0, -1), (1, 0), (0, 1), (-1, 0)]
     x = cell_x + translations[state][0] * c.cell_length - c.player_x
     y = cell_y + translations[state][1] * c.cell_length - c.player_y
-    # pg.draw.circle(c.screen, c.target_color, (x, y), 5)
     pg.draw.rect(c.screen, c.target_color, (x, y, c.cell_length, c.cell_length), 3)
 
 

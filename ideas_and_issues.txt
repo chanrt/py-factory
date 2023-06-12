@@ -1,0 +1,11 @@
+Ideas:
+-> Underground belt
+-> Sound and music
+-> User Interface
+-> Procedural ore generation
+-> Infinite world
+-> Longer supply chains
+
+Issues:
+-> Arm over-rotating
+-> Out of index issues by clicking outside the border
