@@ -1,17 +1,26 @@
 id_map = {}
 
-id_map["conveyor"] = 0
-id_map["conveyor_underground"] = 1
-id_map["arm"] = 2
-id_map["mine"] = 3
-id_map["furnace"] = 4
-id_map["factory"] = 5
+objects = []
 
-id_map["iron"] = 6
-id_map["iron_ore"] = 7
-id_map["copper"] = 8
-id_map["copper_ore"] = 9
+# structures
+objects.extend([
+    "conveyor", "conveyor_underground", "splitter", "arm", "mine", "furnace", "factory",
+])
 
-id_map["gear"] = 10
-id_map["copper_wire"] = 11
-id_map["circuit"] = 12
+# ores
+objects.extend([
+    "iron_ore", "copper_ore"
+])
+
+# resources
+objects.extend([
+    "iron", "copper"
+])
+
+# first derivative products
+objects.extend([
+    "gear", "copper_wire", "circuit"
+])
+
+for object_ in objects:
+    id_map[object_] = len(id_map)

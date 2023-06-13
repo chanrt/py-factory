@@ -1,5 +1,6 @@
 from constants import consts as c
 from conveyor import Conveyor, ConveyorUnderground
+from splitter import Splitter
 from id_mapping import id_map
 from images import img as i
 
@@ -54,11 +55,11 @@ class ItemManager:
         for item in self.items:
             old_row, old_col = item.row, item.col
 
-            if not item.caught and (isinstance(sm.grid[old_row][old_col], Conveyor) or isinstance(sm.grid[old_row][old_col], ConveyorUnderground)):
+            if not item.caught and type(sm.grid[old_row][old_col]) in [Conveyor, ConveyorUnderground, Splitter]:
                 conveyor_direction = sm.grid[old_row][old_col].direction
                 can_move_ahead = True
 
-                if isinstance(sm.grid[old_row][old_col], ConveyorUnderground):
+                if type(sm.grid[old_row][old_col]) in [ConveyorUnderground, Splitter]:
                     conveyor_ug = sm.grid[old_row][old_col]
                     if not conveyor_ug.can_accept_item(old_row, old_col):
                         can_move_ahead = False

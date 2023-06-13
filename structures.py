@@ -3,6 +3,7 @@ from conveyor import Conveyor, ConveyorUnderground
 from factory import Factory
 from furnace import Furnace
 from mine import Mine
+from splitter import Splitter
 
 from constants import consts as c
 from id_mapping import id_map
@@ -32,6 +33,8 @@ class StructureManager:
                 new_structure = Conveyor(row, col, direction)
             elif structure_type == id_map["conveyor_underground"]:
                 new_structure = ConveyorUnderground(row, col, direction)
+            elif structure_type == id_map["splitter"]:
+                new_structure = Splitter(row, col, direction)
             elif structure_type == id_map["arm"]:
                 new_structure = Arm(row, col, direction)
                 c.arm_placed.play()
@@ -66,7 +69,7 @@ class StructureManager:
             if isinstance(structure_to_be_removed, Arm):
                 structure_to_be_removed.safely_drop_item(im)
 
-            if not isinstance(structure_to_be_removed, Conveyor) and not isinstance(structure_to_be_removed, ConveyorUnderground):
+            if type(structure_to_be_removed) not in [Conveyor, ConveyorUnderground, Splitter]:
                 c.structure_destroy.play()
 
             if isinstance(structure_to_be_removed, ConveyorUnderground):
@@ -83,7 +86,7 @@ class StructureManager:
                 c.rotate.play()
 
     def item_can_be_placed(self, row, col):
-        return self.grid[row][col] == 0 or isinstance(self.grid[row][col], Conveyor) or isinstance(self.grid[row][col], ConveyorUnderground)
+        return self.grid[row][col] == 0 or type(self.grid[row][col]) in [Conveyor, ConveyorUnderground, Splitter]
     
     def apply_zoom(self):
         for structure in self.structures:

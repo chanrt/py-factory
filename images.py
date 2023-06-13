@@ -1,50 +1,42 @@
+from os import path
 import pygame as pg
 
 from constants import consts as c
+from id_mapping import id_map
 
 
 class Images:
     def __init__(self):
         self.images = []
 
-        # images should be loaded in the same order as the id_map in id_mapping.py
-        conveyor_list = []
-        for direction in range(4):
-            raw_image = pg.image.load("sprites/conveyor.png")
-            rotated_image = pg.transform.rotate(raw_image, -direction * 90)
-            scaled_image = pg.transform.smoothscale(rotated_image, (c.cell_length, c.cell_length))
-            conveyor_list.append(scaled_image)
-        self.images.append(conveyor_list)
+        for key, value in id_map.items():
+            if value == 0:
+                self.images.append(Images.load_all_rotated_images(["sprites/conveyor.png"]))
+            elif value == 1:
+                self.images.append(Images.load_all_rotated_images(["sprites/conveyor_ug_source.png", "sprites/conveyor_ug_target.png"]))
+            elif value == 2:
+                self.images.append(Images.load_all_rotated_images(["sprites/splitter.png"]))
+            else:
+                image_file_name = key + ".png"
+                image_path = path.join("sprites"    , image_file_name)
+                self.images.append(Images.load_scale_image(image_path))
 
-        conveyor_underground_list = []
-        for direction in range(4):
-            raw_image = pg.image.load("sprites/conveyor_ug_source.png")
-            rotated_image = pg.transform.rotate(raw_image, -direction * 90)
-            scaled_image = pg.transform.smoothscale(rotated_image, (c.cell_length, c.cell_length))
-            conveyor_underground_list.append(scaled_image)
-        for direction in range(4):
-            raw_image = pg.image.load("sprites/conveyor_ug_target.png")
-            rotated_image = pg.transform.rotate(raw_image, -direction * 90)
-            scaled_image = pg.transform.smoothscale(rotated_image, (c.cell_length, c.cell_length))
-            conveyor_underground_list.append(scaled_image)
-        self.images.append(conveyor_underground_list)
+    @staticmethod
+    def load_all_rotated_images(image_paths):
+        images_list = []
 
-        self.images.append(self.load_scale_image("sprites/arm.png"))
-        self.images.append(self.load_scale_image("sprites/mine.png"))
-        self.images.append(self.load_scale_image("sprites/furnace.png"))
-        self.images.append(self.load_scale_image("sprites/factory.png"))
+        for image_path in image_paths:
+            for direction in range(4):
+                raw_image = pg.image.load(image_path)
+                rotated_image = pg.transform.rotate(raw_image, -direction * 90)
+                scaled_image = pg.transform.smoothscale(rotated_image, (c.cell_length, c.cell_length))
+                images_list.append(scaled_image)
+        
+        return images_list
 
-        self.images.append(self.load_scale_image("sprites/iron.png"))
-        self.images.append(self.load_scale_image("sprites/iron_ore.png"))
-        self.images.append(self.load_scale_image("sprites/copper.png"))
-        self.images.append(self.load_scale_image("sprites/copper_ore.png"))
-
-        self.images.append(self.load_scale_image("sprites/gear.png"))
-        self.images.append(self.load_scale_image("sprites/copper_wire.png"))
-        self.images.append(self.load_scale_image("sprites/circuit.png"))
-
-    def load_scale_image(self, path):
-        raw_image = pg.image.load(path)
+    @staticmethod
+    def load_scale_image(image_path):
+        raw_image = pg.image.load(image_path)
         scaled_image = pg.transform.smoothscale(raw_image, (c.cell_length, c.cell_length))
         return scaled_image
     
