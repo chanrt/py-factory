@@ -4,6 +4,7 @@ from constants import consts as c
 from id_mapping import id_map
 from images import img as i
 from recipes import recipes
+from ui import ui
 
 
 class Factory:
@@ -47,6 +48,21 @@ class Factory:
 
     def render_tooltip(self):
         pg.draw.rect(c.screen, c.target_color, (self.target_col * c.cell_length - c.player_x, self.target_row * c.cell_length - c.player_y, c.cell_length, c.cell_length), 3)
+
+        if self.recipe is None:
+            status = "NO RECIPE"
+            ui.render_text(f"Factory [{status}]: (L/R) to rotate, (LMB) to select recipe")
+        else: 
+            if self.progress == 0:
+                status = "WAITING"
+            elif self.progress < recipes[self.recipe]["time"]:
+                status = "WORKING"
+            else:
+                status = "FULL"
+
+            producing_item = recipes[self.recipe]["name"]
+            ui.render_text(f"Factory [{status}]: Producing {producing_item} (L/R) to rotate, (LMB) to select recipe")
+        
 
     def set_recipe(self, recipe):
         self.recipe = recipe

@@ -3,7 +3,7 @@ import pygame as pg
 from constants import consts as c
 from id_mapping import id_map
 from images import img as i
-from world import world as w
+from ui import ui
 
 
 class Furnace:
@@ -46,6 +46,15 @@ class Furnace:
 
     def render_tooltip(self):
         pg.draw.rect(c.screen, c.target_color, (self.target_col * c.cell_length - c.player_x, self.target_row * c.cell_length - c.player_y, c.cell_length, c.cell_length), 3)
+
+        if self.smelting is None:
+            status = "EMPTY"
+        elif self.progress < c.smelt_time:
+            status = "WORKING"
+        else:
+            status = "FULL"
+
+        ui.render_text(f"Furnace [{status}]: (L/R)")
 
     def rotate(self, direction):
         self.direction = (self.direction + direction) % 4

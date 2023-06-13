@@ -17,8 +17,13 @@ class UI:
             "factory",
         ]
         self.sprites = []
+
         for name in self.sprite_names:
             self.sprites.append(self.load_scale_image(name))
+
+        self.numbers = []
+        for i in range(len(self.sprites)):
+            self.numbers.append(c.merriweather.render(str(i + 1), True, pg.Color("white")))
 
     def load_scale_image(self, name):
         image = pg.image.load(path.join(self.root, name + ".png"))
@@ -38,7 +43,10 @@ class UI:
             if i + 1 == c.const_state:
                 pg.draw.rect(c.screen, pg.Color("white"), (x, y, c.ui_icon_size, c.ui_icon_size), 3)
 
-            number = c.orbitron.render(str(i + 1), True, pg.Color("white"))
-            c.screen.blit(number, (x, y - 1.5 * c.ui_icon_size))
+            c.screen.blit(self.numbers[i], (x + self.numbers[i].get_width() // 2, y - 1 * c.ui_icon_size))
+
+    def render_text(self, text):
+        text = c.merriweather.render(text, True, pg.Color("white"))
+        c.screen.blit(text, (1.5 * c.ui_icon_size, 3 * c.title_font_size), )
 
 ui = UI()

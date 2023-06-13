@@ -6,6 +6,7 @@ from factory import Factory
 from furnace import Furnace
 from id_mapping import id_map
 from images import img as i
+from ui import ui
 
 
 class Arm:
@@ -64,6 +65,15 @@ class Arm:
     def render_tooltip(self):
         pg.draw.rect(c.screen, c.source_color, (self.source_col * c.cell_length - c.player_x, self.source_row * c.cell_length - c.player_y, c.cell_length, c.cell_length), 3)
         pg.draw.rect(c.screen, c.target_color, (self.target_col * c.cell_length - c.player_x, self.target_row * c.cell_length - c.player_y, c.cell_length, c.cell_length), 3)
+
+        if self.angle == self.start_angle:
+            status = "WAITING"
+        elif self.target_blocked:
+            status = "FULL"
+        else:
+            status = "WORKING"
+
+        ui.render_text(f"Arm [{status}]: (L/R) to rotate")
 
     def rotate(self, direction):
         self.direction = (self.direction + direction) % 4

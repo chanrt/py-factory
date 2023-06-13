@@ -3,6 +3,7 @@ import pygame as pg
 from constants import consts as c
 from id_mapping import id_map
 from images import img as i
+from ui import ui
 
 
 class Splitter:
@@ -79,6 +80,13 @@ class Splitter:
         pg.draw.rect(c.screen, c.source_color, (self.col * c.cell_length - c.player_x, self.row * c.cell_length - c.player_y, c.cell_length, c.cell_length), 3)
         pg.draw.rect(c.screen, c.target_color, (self.target1_col * c.cell_length - c.player_x, self.target1_row * c.cell_length - c.player_y, c.cell_length, c.cell_length), 3)
         pg.draw.rect(c.screen, c.target_color, (self.target2_col * c.cell_length - c.player_x, self.target2_row * c.cell_length - c.player_y, c.cell_length, c.cell_length), 3)
+
+        if not self.target1_open and not self.target2_open:
+            status = "FULL"
+        else:
+            status = "WORKING"
+        
+        ui.render_text(f"Splitter [{status}]: (L/R) to rotate")
 
     def calc_position(self):
         self.x = self.col * c.cell_length

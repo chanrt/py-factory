@@ -68,7 +68,10 @@ class Constants:
 
     def load_fonts(self):
         self.title_font_size = 30
-        self.orbitron = pg.font.Font("fonts/Orbitron-Regular.ttf", 30)
+        self.orbitron = pg.font.Font("fonts/Orbitron-Regular.ttf", self.title_font_size)
+
+        self.text_font_size = 20
+        self.merriweather = pg.font.Font("fonts/Merriweather-Regular.ttf", self.text_font_size)
 
     def set_dt(self, dt):
         self.dt = dt

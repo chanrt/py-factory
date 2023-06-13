@@ -3,6 +3,7 @@ import pygame as pg
 from constants import consts as c
 from id_mapping import id_map
 from images import img as i
+from ui import ui
 
 
 class Conveyor:
@@ -11,6 +12,7 @@ class Conveyor:
         self.col = col
         self.direction = direction
         self.calc_position()
+        self.init_squares()
 
     def update(self, sm, im):
         pass
@@ -19,7 +21,9 @@ class Conveyor:
         c.screen.blit(i.images[id_map["conveyor"]][self.direction], (self.x - c.player_x, self.y - c.player_y))
 
     def render_tooltip(self):
-        pass
+        pg.draw.rect(c.screen, c.source_color, (self.source_col * c.cell_length - c.player_x, self.source_row * c.cell_length - c.player_y, c.cell_length, c.cell_length), 3)
+        pg.draw.rect(c.screen, c.target_color, (self.target_col * c.cell_length - c.player_x, self.target_row * c.cell_length - c.player_y, c.cell_length, c.cell_length), 3)
+        ui.render_text("Conveyor [WORKING]: (L/R) to rotate")
 
     def rotate(self, direction):
         self.direction = (self.direction + direction) % 4
@@ -27,6 +31,28 @@ class Conveyor:
     def calc_position(self):
         self.x = self.col * c.cell_length
         self.y = self.row * c.cell_length
+
+    def init_squares(self):
+        if self.direction == 0:
+            self.source_row = self.row + 1
+            self.source_col = self.col
+            self.target_row = self.row - 1
+            self.target_col = self.col
+        elif self.direction == 1:
+            self.source_row = self.row
+            self.source_col = self.col - 1
+            self.target_row = self.row
+            self.target_col = self.col + 1
+        elif self.direction == 2:
+            self.source_row = self.row - 1
+            self.source_col = self.col
+            self.target_row = self.row + 1
+            self.target_col = self.col
+        elif self.direction == 3:
+            self.source_row = self.row
+            self.source_col = self.col + 1
+            self.target_row = self.row
+            self.target_col = self.col - 1
 
 
 class ConveyorUnderground:
@@ -65,7 +91,7 @@ class ConveyorUnderground:
 
     def render(self):
         c.screen.blit(i.images[id_map["conveyor_underground"]][self.direction], (self.source_x - c.player_x, self.source_y - c.player_y))
-        c.screen.blit(i.images[id_map["conveyor_underground"]][self.direction + 4], (self.target_x - c.player_x, self.target_y - c.player_y))
+        c.screen.blit(i.images[id_map["conveyor_underground"]][self.direction + 4], (self.target_x - c.player_x, self.target_y - c.player_y))   
 
     def render_tooltip(self):
         pg.draw.line(
@@ -74,6 +100,14 @@ class ConveyorUnderground:
             (self.target_x - c.player_x + c.cell_length // 2, self.target_y - c.player_y + c.cell_length // 2), 
             3
         )
+
+        if len(self.storage) == self.length:
+            status = "FULL"
+        elif len(self.storage) == 0:
+            status = "EMPTY"
+        else:
+            status = "WORKING"
+        ui.render_text(f"Underground Conveyor [{status}]")
 
     def init_target(self):
         self.target_row = self.source_row

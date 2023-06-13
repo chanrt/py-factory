@@ -3,6 +3,7 @@ import pygame as pg
 from constants import consts as c
 from id_mapping import id_map
 from images import img as i
+from ui import ui
 from world import world as w
 
 
@@ -17,6 +18,7 @@ class Mine:
 
         self.mining = None
         self.progress = 0
+        self.target_blocked = False
 
     def update(self, sm, im):
         if self.mining is None:
@@ -41,6 +43,15 @@ class Mine:
 
     def render_tooltip(self):
         pg.draw.rect(c.screen, c.target_color, (self.target_col * c.cell_length - c.player_x, self.target_row * c.cell_length - c.player_y, c.cell_length, c.cell_length), 3)
+
+        if w.world[self.row][self.col] == 0:
+            status = "NO ORE"
+        elif self.progress < c.mine_time:
+            status = "WORKING"
+        else:
+            status = "FULL"
+        
+        ui.render_text(f"Mine [{status}]: (L/R) to rotate")
 
     def rotate(self, direction):
         self.direction = (self.direction + direction) % 4

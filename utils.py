@@ -4,7 +4,7 @@ import pygame as pg
 from constants import consts as c
 from id_mapping import id_map
 from images import img as i
-
+from ui import ui
 
 def move_player(keys_pressed):
     if keys_pressed[pg.K_UP] or keys_pressed[pg.K_w]:
@@ -43,6 +43,7 @@ def draw_action(cell_x, cell_y):
 
     if c.const_state == 1:
         c.screen.blit(i.images[id_map["conveyor"]][c.rot_state], (cell_x - 1, cell_y - 1))
+        ui.render_text("Place Conveyor: (L/R) to rotate")
 
     if c.const_state == 2:
         c.screen.blit(i.images[id_map["conveyor_underground"]][c.rot_state], (cell_x - 1, cell_y - 1))
@@ -51,6 +52,7 @@ def draw_action(cell_x, cell_y):
         y = cell_y - translations[c.rot_state][1] * c.ug_state * c.cell_length
         c.screen.blit(i.images[id_map["conveyor_underground"]][c.rot_state + 4], (x, y))
         pg.draw.circle(c.screen, c.action_color, (x + c.cell_length // 2, y + c.cell_length // 2), 4 * c.cell_length // 5, 2)
+        ui.render_text("Place Underground Conveyor: (L/R) to rotate (Shift/Ctrl) to change length")
 
     elif c.const_state == 3:
         c.screen.blit(i.images[id_map["splitter"]][c.rot_state], (cell_x - 1, cell_y - 1))
@@ -61,6 +63,7 @@ def draw_action(cell_x, cell_y):
         y2 = cell_y - translations[c.rot_state][1][1] * c.cell_length
         pg.draw.rect(c.screen, c.target_color, (x1, y1, c.cell_length, c.cell_length), 3)
         pg.draw.rect(c.screen, c.target_color, (x2, y2, c.cell_length, c.cell_length), 3)
+        ui.render_text("Place Splitter: (L/R) to rotate")
 
     elif c.const_state == 4:
         c.screen.blit(i.images[id_map["arm"]], (cell_x - 1, cell_y - 1))
@@ -74,18 +77,22 @@ def draw_action(cell_x, cell_y):
         pg.draw.line(c.screen, c.arm_color, (start_x, start_y), (end_x, end_y), 2)
         draw_source(cell_x, cell_y, c.rot_state)
         draw_target(cell_x, cell_y, c.rot_state)
+        ui.render_text("Place Arm: (L/R) to rotate")
 
     elif c.const_state == 5:
         c.screen.blit(i.images[id_map["mine"]], (cell_x - 1, cell_y - 1))
-        draw_target(cell_x, cell_y, c.rot_state)  
+        draw_target(cell_x, cell_y, c.rot_state) 
+        ui.render_text("Place Mine: (L/R) to rotate") 
 
     elif c.const_state == 6:
         c.screen.blit(i.images[id_map["furnace"]], (cell_x - 1, cell_y - 1))
         draw_target(cell_x, cell_y, c.rot_state)
+        ui.render_text("Place Furnace: (L/R) to rotate")
 
     elif c.const_state == 7:
         c.screen.blit(i.images[id_map["factory"]], (cell_x - 1, cell_y - 1))
         draw_target(cell_x, cell_y, c.rot_state)
+        ui.render_text("Place Factory: (L/R) to rotate")
 
 
 def draw_target(cell_x, cell_y, state):
