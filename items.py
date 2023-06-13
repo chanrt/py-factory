@@ -90,9 +90,9 @@ class ItemManager:
 
     def remove(self, row, col, by_player = False):
         if self.grid[row][col] != 0:
-            item_to_be_removed = self.grid[row][col]
+            item = self.grid[row][col]
             self.grid[row][col] = 0
-            self.items.remove(item_to_be_removed)
+            self.items.remove(item)
 
             if by_player:
                 c.item_pick_up.play()
@@ -110,7 +110,6 @@ class ItemManager:
         
         item.row = row
         item.col = col
-        item.calc_position()
 
     def contains_ore(self, row, col):
         if self.grid[row][col] != 0 and self.grid[row][col].item in [id_map["iron_ore"], id_map["copper_ore"]]:

@@ -20,10 +20,12 @@ class Constants:
         self.ug_state = 3
 
         self.music_padding = 5
+        self.ui_icon_size = 30
 
         self.set_colors()
         self.set_speeds()
         self.load_sounds()
+        self.load_fonts()
 
     def set_colors(self):
         self.bg_color = pg.Color("#222222")
@@ -63,6 +65,10 @@ class Constants:
         self.structure_destroy.set_volume(0.5)
 
         self.rotate = pg.mixer.Sound(path.join(root, "rotate.wav"))
+
+    def load_fonts(self):
+        self.title_font_size = 30
+        self.orbitron = pg.font.Font("fonts/Orbitron-Regular.ttf", 30)
 
     def set_dt(self, dt):
         self.dt = dt

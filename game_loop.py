@@ -7,11 +7,14 @@ from items import item_manager as im
 from images import img as i
 from music_player import music_player as mp
 from structures import structure_manager as sm
+from ui import ui
 from utils import *
 from world import world as w
 
 
 def game_loop():
+    title = c.orbitron.render("PyFactory", True, pg.Color("white"))
+
     while True:
         start = time()
         c.clock.tick(c.fps)
@@ -36,6 +39,7 @@ def game_loop():
                     return
                 if pg.K_0 < event.key < pg.K_8:
                     c.const_state = event.key - pg.K_0
+                    ui.update_selection
                 if event.key == pg.K_g:
                     c.toggle_gridlines()
                 if event.key == pg.K_r or event.key == pg.K_l:
@@ -78,11 +82,15 @@ def game_loop():
         w.render()
         sm.render()
         im.render()
+        ui.render()
 
         if sm.grid[cell_row][cell_col] == 0:
             draw_action(cell_x, cell_y)
         else:
             sm.grid[cell_row][cell_col].render_tooltip()
+
+        pg.draw.rect(c.screen, pg.Color("black"), (0, 0, c.sw, c.title_font_size * 2))
+        c.screen.blit(title, ((c.sw - title.get_width()) / 2, c.title_font_size / 2))
 
         pg.display.flip()
 

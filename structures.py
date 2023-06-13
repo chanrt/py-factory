@@ -64,25 +64,31 @@ class StructureManager:
 
     def remove(self, row, col):
         if self.grid[row][col] != 0:
-            structure_to_be_removed = self.grid[row][col]
+            structure = self.grid[row][col]
 
-            if isinstance(structure_to_be_removed, Arm):
-                structure_to_be_removed.safely_drop_item(im)
+            if isinstance(structure, Arm):
+                structure.safely_drop_item(im)
 
-            if type(structure_to_be_removed) not in [Conveyor, ConveyorUnderground, Splitter]:
+            if type(structure) not in [Conveyor, ConveyorUnderground, Splitter]:
                 c.structure_destroy.play()
 
-            if isinstance(structure_to_be_removed, ConveyorUnderground):
-                self.grid[structure_to_be_removed.source_row][structure_to_be_removed.source_col] = 0
-                self.grid[structure_to_be_removed.target_row][structure_to_be_removed.target_col] = 0
+            if isinstance(structure, ConveyorUnderground):
+                self.grid[structure.source_row][structure.source_col] = 0
+                self.grid[structure.target_row][structure.target_col] = 0
 
             self.grid[row][col] = 0
-            self.structures.remove(structure_to_be_removed)
+            self.structures.remove(structure)
 
     def rotate(self, row, col, direction = 1):
         if self.grid[row][col] != 0:
-            if not isinstance(self.grid[row][col], ConveyorUnderground):
-                self.grid[row][col].rotate(direction)
+            structure = self.grid[row][col]
+            if type(structure) == Arm:
+                structure.safely_drop_item(im)
+                structure.rotate(direction)
+                c.rotate.play()
+
+            elif type(structure) != ConveyorUnderground:
+                structure.rotate(direction)
                 c.rotate.play()
 
     def item_can_be_placed(self, row, col):

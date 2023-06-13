@@ -16,8 +16,15 @@ class Arm:
         self.calc_position()
         self.init_direction()
 
+        self.target_blocked = False
+
     def update(self, sm, im):
         self.calc_arm_coords()
+
+        if im.grid[self.target_row][self.target_col] == 0:
+            self.target_blocked = False
+        else:
+            self.target_blocked = True
 
         if self.caught_item is None:
             if self.angle == self.start_angle:
@@ -43,20 +50,20 @@ class Arm:
             self.caught_item.y = self.end_y + c.player_y
 
             if abs(self.angle - self.stop_angle) % (2 * pi) < c.arm_speed * c.dt:
-                if im.grid[self.target_row][self.target_col] == 0:
+                if not self.target_blocked:
                     im.drop_item(self.caught_item, self.end_x + c.player_x, self.end_y + c.player_y)
-                    self.caught_item = None      
+                    self.caught_item = None
 
     def render(self):
         c.screen.blit(i.images[id_map["arm"]], (self.x - c.player_x, self.y - c.player_y))
         pg.draw.line(c.screen, c.arm_color, (self.pivot_x, self.pivot_y), (self.end_x, self.end_y), 2)
 
+        if self.caught_item is not None and self.target_blocked:
+            pg.draw.rect(c.screen, c.full_color, (self.x - c.player_x, self.y - c.player_y, c.cell_length, c.cell_length), 3)
+
     def render_tooltip(self):
         pg.draw.rect(c.screen, c.source_color, (self.source_col * c.cell_length - c.player_x, self.source_row * c.cell_length - c.player_y, c.cell_length, c.cell_length), 3)
         pg.draw.rect(c.screen, c.target_color, (self.target_col * c.cell_length - c.player_x, self.target_row * c.cell_length - c.player_y, c.cell_length, c.cell_length), 3)
-
-        # pg.draw.circle(c.screen, c.source_color, (self.source_col * c.cell_length - c.player_x + c.cell_length // 2, self.source_row * c.cell_length - c.player_y + c.cell_length // 2), 5, 2)
-        # pg.draw.circle(c.screen, c.target_color, (self.target_col * c.cell_length - c.player_x + c.cell_length // 2, self.target_row * c.cell_length - c.player_y + c.cell_length // 2), 5)
 
     def rotate(self, direction):
         self.direction = (self.direction + direction) % 4
@@ -118,4 +125,5 @@ class Arm:
     def safely_drop_item(self, im):
         if self.caught_item is not None:
             im.drop_item(self.caught_item, self.end_x, self.end_y)
+            im.remove(self.caught_item.row, self.caught_item.col)
             self.caught_item = None
