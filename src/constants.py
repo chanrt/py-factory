@@ -13,7 +13,7 @@ class Constants:
 
         self.player_x = 0
         self.player_y = 0
-    
+
         self.show_gridlines = True
         self.const_state = 1
         self.rot_state = 0
@@ -38,10 +38,12 @@ class Constants:
         self.working_color = pg.Color("#ffffff")
         self.full_color = pg.Color("#ffa500")
 
-        self.ore_colors = dict([
-            (id_map["iron_ore"], pg.Color("#a19d94")),
-            (id_map["copper_ore"], pg.Color("#b87333")),
-        ])
+        self.ore_colors = dict(
+            [
+                (id_map["iron_ore"], pg.Color("#a19d94")),
+                (id_map["copper_ore"], pg.Color("#b87333")),
+            ]
+        )
 
     def set_speeds(self):
         self.player_speed = 200
@@ -53,25 +55,31 @@ class Constants:
 
     def load_sounds(self):
         pg.init()
-        root = "sounds"
+        root = "data/sounds"
         self.structure_placed = pg.mixer.Sound(path.join(root, "structure_placed.wav"))
-        self.arm_placed = pg.mixer.Sound(path.join(root, "arm_placed.wav")) 
+        self.arm_placed = pg.mixer.Sound(path.join(root, "arm_placed.wav"))
         self.mine_placed = pg.mixer.Sound(path.join(root, "mine_placed.wav"))
         self.furnace_placed = pg.mixer.Sound(path.join(root, "furnace_placed.wav"))
         self.factory_placed = pg.mixer.Sound(path.join(root, "factory_placed.wav"))
 
         self.item_pick_up = pg.mixer.Sound(path.join(root, "item_pick_up.wav"))
-        self.structure_destroy = pg.mixer.Sound(path.join(root, "structure_destroy.mp3"))
+        self.structure_destroy = pg.mixer.Sound(
+            path.join(root, "structure_destroy.mp3")
+        )
         self.structure_destroy.set_volume(0.5)
 
         self.rotate = pg.mixer.Sound(path.join(root, "rotate.wav"))
 
     def load_fonts(self):
         self.title_font_size = 30
-        self.orbitron = pg.font.Font("fonts/Orbitron-Regular.ttf", self.title_font_size)
+        self.orbitron = pg.font.Font(
+            "data/fonts/Orbitron-Regular.ttf", self.title_font_size
+        )
 
         self.text_font_size = 20
-        self.merriweather = pg.font.Font("fonts/Merriweather-Regular.ttf", self.text_font_size)
+        self.merriweather = pg.font.Font(
+            "data/fonts/Merriweather-Regular.ttf", self.text_font_size
+        )
 
     def set_dt(self, dt):
         self.dt = dt

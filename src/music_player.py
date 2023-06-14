@@ -9,18 +9,18 @@ durations = {
     "epic_emotional_cinematic_trailer.mp3": 130,
     "impulse.mp3": 252,
     "quantum_sparks.mp3": 132,
-    "time_travel.mp3": 195
+    "time_travel.mp3": 195,
 }
 
 
 class MusicPlayer:
     def __init__(self):
-        self.file_location = "music"
+        self.file_location = "data/music"
         self.file_names = [
             "epic_emotional_cinematic_trailer.mp3",
             "impulse.mp3",
             "quantum_sparks.mp3",
-            "time_travel.mp3"
+            "time_travel.mp3",
         ]
         shuffle(self.file_names)
 
