@@ -7,9 +7,9 @@ from game_loop import game_loop
 def main_menu():
     # this should lead to the menu screen (to be developed later)
     game_loop()
-    
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     pg.init()
     screen = pg.display.set_mode((0, 0), pg.FULLSCREEN)
     clock = pg.time.Clock()
