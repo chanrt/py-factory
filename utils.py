@@ -1,4 +1,4 @@
-from numpy import cos, pi, sin
+from math import cos, pi, sin
 import pygame as pg
 
 from constants import consts as c

@@ -92,6 +92,9 @@ def game_loop():
         pg.draw.rect(c.screen, pg.Color("black"), (0, 0, c.sw, c.title_font_size * 2))
         c.screen.blit(title, ((c.sw - title.get_width()) / 2, c.title_font_size / 2))
 
+        fps_text = c.merriweather.render(f"FPS: {round(c.clock.get_fps())}", True, pg.Color("white"))
+        c.screen.blit(fps_text, (c.sw - fps_text.get_width() - 10, 10))
+
         pg.display.flip()
 
         end = time()

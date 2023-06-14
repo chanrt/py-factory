@@ -1,5 +1,5 @@
 import pygame as pg
-from numpy import cos, pi, sin
+from math import cos, pi, sin
 
 from constants import consts as c
 from factory import Factory

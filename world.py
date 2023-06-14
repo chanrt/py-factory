@@ -1,5 +1,5 @@
-from numpy import zeros
 import pygame as pg
+from numpy import zeros
 
 from constants import consts as c
 from id_mapping import id_map

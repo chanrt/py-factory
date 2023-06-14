@@ -21,6 +21,11 @@ def select_recipe():
         new_button = Button(x, y, c.button_width, c.button_height, c.screen, recipes[i]["name"])
         buttons.append(new_button)
 
+    title_text = c.orbitron.render("Select a recipe", True, "white")
+
+    for button in buttons:
+        button.set_font(c.orbitron)
+
     while True:
         mouse_pos = pg.mouse.get_pos()
         for event in pg.event.get():
@@ -39,6 +44,8 @@ def select_recipe():
             button.update(mouse_pos)
 
         c.screen.fill(c.bg_color)
+
+        c.screen.blit(title_text, ((c.sw - title_text.get_width()) / 2, c.title_font_size / 2))
 
         for button in buttons:
             button.render()

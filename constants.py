@@ -5,7 +5,7 @@ from id_mapping import id_map
 
 class Constants:
     def __init__(self):
-        self.fps = 30
+        self.fps = 120
         self.dt = 1.0 / self.fps
 
         self.num_cells = 100
