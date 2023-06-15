@@ -1,9 +1,9 @@
 from constants import consts as c
-from conveyor import Conveyor, ConveyorUnderground
-from splitter import Splitter
+from structures.conveyor import Conveyor, ConveyorUnderground
+from structures.splitter import Splitter
 from id_mapping import id_map, reverse_id_map
 from images import img as i
-from ui import ui
+from ui.game import ui
 
 
 class Item:

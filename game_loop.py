@@ -6,8 +6,8 @@ from id_mapping import id_map
 from items import item_manager as im
 from images import img as i
 from music_player import music_player as mp
-from structures import structure_manager as sm
-from ui import ui
+from structure_manager import structure_manager as sm
+from ui.game import ui
 from utils import *
 from world import world as w
 

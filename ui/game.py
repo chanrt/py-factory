@@ -6,7 +6,6 @@ from constants import consts as c
 
 class UI:
     def __init__(self):
-        self.root = "sprites"
         self.sprite_names = [
             "conveyor",
             "conveyor_ug_source",
@@ -26,7 +25,8 @@ class UI:
             self.numbers.append(c.merriweather.render(str(i + 1), True, pg.Color("white")))
 
     def load_scale_image(self, name):
-        image = pg.image.load(path.join(self.root, name + ".png"))
+        image_path = path.join("sprites", "structures", name + ".png")
+        image = pg.image.load(image_path)
         return pg.transform.smoothscale(image, (c.ui_icon_size, c.ui_icon_size))
     
     def update_selection(self, selection):

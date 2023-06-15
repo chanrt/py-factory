@@ -67,7 +67,6 @@ class Factory:
 
     def render_recipe(self):
         if self.recipe is not None:
-            x, y = pg.mouse.get_pos()
             c.screen.blit(self.recipe_text, (self.x + (c.cell_length - self.recipe_text.get_width()) // 2, self.y - c.cell_length))
 
     def set_recipe(self, recipe):

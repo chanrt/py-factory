@@ -54,7 +54,7 @@ class Furnace:
         else:
             status = "FULL"
 
-        ui.render_text(f"Furnace [{status}]: (L/R)")
+        ui.render_text(f"Furnace [{status}]: (L/R) to rotate")
 
     def rotate(self, direction):
         self.direction = (self.direction + direction) % 4

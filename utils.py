@@ -4,7 +4,7 @@ import pygame as pg
 from constants import consts as c
 from id_mapping import id_map
 from images import img as i
-from ui import ui
+from ui.game import ui
 
 def move_player(keys_pressed):
     if keys_pressed[pg.K_UP] or keys_pressed[pg.K_w]:

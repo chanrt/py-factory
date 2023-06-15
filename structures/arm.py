@@ -2,11 +2,11 @@ import pygame as pg
 from math import cos, pi, sin
 
 from constants import consts as c
-from factory import Factory
-from furnace import Furnace
+from structures.factory import Factory
+from structures.furnace import Furnace
 from id_mapping import id_map
 from images import img as i
-from ui import ui
+from ui.game import ui
 
 
 class Arm:
@@ -30,10 +30,10 @@ class Arm:
         if self.caught_item is None:
             if self.angle == self.start_angle:
                 if im.grid[self.source_row][self.source_col] != 0:
-                    if isinstance(sm.grid[self.target_row][self.target_col], Furnace):
+                    if type(im.grid[self.source_row][self.source_col]) == Furnace:
                         if im.contains_ore(self.source_row, self.source_col):
                             self.caught_item = im.fetch_item(self.source_row, self.source_col)
-                    elif isinstance(sm.grid[self.target_row][self.target_col], Factory):
+                    elif type(im.grid[self.source_row][self.source_col]) == Factory:
                         factory = sm.grid[self.target_row][self.target_col]
                         if factory.will_accept_item(im.grid[self.source_row][self.source_col].item):
                             self.caught_item = im.fetch_item(self.source_row, self.source_col)

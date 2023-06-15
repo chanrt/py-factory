@@ -1,14 +1,14 @@
-from arm import Arm
-from conveyor import Conveyor, ConveyorUnderground
-from factory import Factory
-from furnace import Furnace
-from mine import Mine
-from splitter import Splitter
+from structures.arm import Arm
+from structures.conveyor import Conveyor, ConveyorUnderground
+from structures.factory import Factory
+from structures.furnace import Furnace
+from structures.mine import Mine
+from structures.splitter import Splitter
 
 from constants import consts as c
 from id_mapping import id_map
 from items import item_manager as im
-from recipe_selection import select_recipe
+from ui.recipe_selection import select_recipe
 
 
 class StructureManager:

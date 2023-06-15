@@ -1,6 +1,6 @@
 import pygame as pg
 
-from button import Button
+from ui.button import Button
 from constants import consts as c
 from id_mapping import reverse_id_map
 from recipes import recipes

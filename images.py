@@ -11,22 +11,26 @@ class Images:
 
         for key, value in id_map.items():
             if value == 0:
-                self.images.append(Images.load_all_rotated_images(["sprites/conveyor.png"]))
+                self.images.append(Images.load_all_rotated_images(["conveyor"]))
             elif value == 1:
-                self.images.append(Images.load_all_rotated_images(["sprites/conveyor_ug_source.png", "sprites/conveyor_ug_target.png"]))
+                self.images.append(Images.load_all_rotated_images(["conveyor_ug_source", "conveyor_ug_target"]))
             elif value == 2:
-                self.images.append(Images.load_all_rotated_images(["sprites/splitter.png"]))
+                self.images.append(Images.load_all_rotated_images(["splitter"]))
             else:
-                image_file_name = key + ".png"
-                image_path = path.join("sprites"    , image_file_name)
-                self.images.append(Images.load_scale_image(image_path))
+                if value < 7:
+                    image_type = "structures"
+                else:
+                    image_type = "items"
+
+                self.images.append(Images.load_scale_image(key, image_type))
 
     @staticmethod
-    def load_all_rotated_images(image_paths):
+    def load_all_rotated_images(image_names):
         images_list = []
 
-        for image_path in image_paths:
+        for image_name in image_names:
             for direction in range(4):
+                image_path = path.join("sprites", "structures", image_name + ".png")
                 raw_image = pg.image.load(image_path)
                 rotated_image = pg.transform.rotate(raw_image, -direction * 90)
                 scaled_image = pg.transform.smoothscale(rotated_image, (c.cell_length, c.cell_length))
@@ -35,7 +39,8 @@ class Images:
         return images_list
 
     @staticmethod
-    def load_scale_image(image_path):
+    def load_scale_image(image_name, image_type):
+        image_path = path.join("sprites", image_type, image_name + ".png")
         raw_image = pg.image.load(image_path)
         scaled_image = pg.transform.smoothscale(raw_image, (c.cell_length, c.cell_length))
         return scaled_image
