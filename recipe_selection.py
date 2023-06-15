@@ -2,6 +2,7 @@ import pygame as pg
 
 from button import Button
 from constants import consts as c
+from id_mapping import reverse_id_map
 from recipes import recipes
 
 
@@ -49,6 +50,17 @@ def select_recipe():
 
         for button in buttons:
             button.render()
+
+        for i, button in enumerate(buttons):
+            if button.is_hovering:
+                text = f"{recipes[i]['name']} requires "
+                for item in recipes[i]["inputs"]:
+                    text += f"{reverse_id_map[item].replace('_', ' ')} ({recipes[i]['inputs'][item]}) "
+
+                recipe_text = c.merriweather.render(text, True, pg.Color("white"))
+                x, y = pg.mouse.get_pos()
+                c.screen.blit(recipe_text, (button.x - recipe_text.get_width() // 2, button.y - button.height))
+
 
         pg.display.flip()
 

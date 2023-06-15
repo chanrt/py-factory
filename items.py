@@ -1,21 +1,15 @@
 from constants import consts as c
 from conveyor import Conveyor, ConveyorUnderground
 from splitter import Splitter
-from id_mapping import id_map
+from id_mapping import id_map, reverse_id_map
 from images import img as i
 from ui import ui
-
-
-def get_key_from_value(value):
-    for key in id_map:
-        if id_map[key] == value:
-            return key
 
 
 class Item:
     def __init__(self, row, col, item):
         self.item = item
-        self.item_name = get_key_from_value(item).replace("_", " ").title()
+        self.item_name = reverse_id_map[item].replace("_", " ").title()
         self.row = row
         self.col = col
         self.calc_position()
@@ -103,7 +97,11 @@ class ItemManager:
         if self.grid[row][col] != 0:
             item = self.grid[row][col]
             self.grid[row][col] = 0
-            self.items.remove(item)
+
+            try:
+                self.items.remove(item)
+            except ValueError:
+                pass
 
             if by_player:
                 c.item_pick_up.play()
@@ -131,5 +129,10 @@ class ItemManager:
     def apply_zoom(self):
         for item in self.items:
             item.calc_position()
+
+    def garbage_collection(self):
+        for item in self.items:
+            if not item.caught and self.grid[item.row][item.col] == 0:
+                self.items.remove(item)
 
 item_manager = ItemManager()

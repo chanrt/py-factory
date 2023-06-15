@@ -15,7 +15,7 @@ class Button:
         self.display = True
 
         # default background color
-        self.bg_color = pg.Color("black")
+        self.bg_color = pg.Color("#00008b")
 
         # default text properties (private variables)
         self._text = text
@@ -36,7 +36,7 @@ class Button:
         # hover properties
         self.change_on_hover = True
         self.is_hovering = False
-        self.hover_color = pg.Color(64, 64, 64)
+        self.hover_color = pg.Color("#191970")
 
         self.init_display_text()
 

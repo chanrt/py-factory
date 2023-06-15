@@ -1,7 +1,7 @@
 import pygame as pg
 
 from constants import consts as c
-from id_mapping import id_map
+from id_mapping import id_map, reverse_id_map
 from images import img as i
 from recipes import recipes
 from ui import ui
@@ -63,11 +63,26 @@ class Factory:
             producing_item = recipes[self.recipe]["name"]
             ui.render_text(f"Factory [{status}]: Producing {producing_item} (L/R) to rotate, (LMB) to select recipe")
         
+        self.render_recipe()
+
+    def render_recipe(self):
+        if self.recipe is not None:
+            x, y = pg.mouse.get_pos()
+            c.screen.blit(self.recipe_text, (self.x + (c.cell_length - self.recipe_text.get_width()) // 2, self.y - c.cell_length))
 
     def set_recipe(self, recipe):
-        self.recipe = recipe
-        self.storage = []
-        self.progress = 0
+        if self.recipe is None or recipe is not None:
+            self.recipe = recipe
+            self.compose_recipe_text()
+            self.storage = []
+            self.progress = 0
+
+    def compose_recipe_text(self):
+        if self.recipe is not None:
+            text = f"{recipes[self.recipe]['name']} requires "
+            for item in recipes[self.recipe]["inputs"]:
+                text += f"{reverse_id_map[item].replace('_', ' ')} ({recipes[self.recipe]['inputs'][item]}) "
+            self.recipe_text = c.merriweather.render(text, True, pg.Color("white"))
     
     def will_accept_item(self, item):
         if self.recipe is None:

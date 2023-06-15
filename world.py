@@ -2,13 +2,7 @@ import pygame as pg
 from numpy import zeros
 
 from constants import consts as c
-from id_mapping import id_map
-
-
-def get_ore_from_value(value):
-    for key in id_map:
-        if id_map[key] == value:
-            return key
+from id_mapping import id_map, reverse_id_map
 
 
 class World:
@@ -36,7 +30,7 @@ class World:
 
     def render_tooltip(self, row, col):
         x, y = pg.mouse.get_pos()
-        ore = get_ore_from_value(self.grid[row, col]).replace("_", " ").title()
+        ore = reverse_id_map[self.grid[row, col]].replace("_", " ").title()
         ore_text = c.merriweather.render(ore, True, pg.Color("white"))
         c.screen.blit(ore_text, (x + 20, y + 20))
 

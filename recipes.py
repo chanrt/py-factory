@@ -10,6 +10,13 @@ recipes.append({
 })
 
 recipes.append({
+    "name": "Pipe",
+    "inputs": {id_map["iron"]: 1},
+    "output": id_map["pipe"],
+    "time": 1
+})
+
+recipes.append({
     "name": "Wire",
     "inputs": {id_map["copper"]: 1},
     "output": id_map["copper_wire"],
@@ -20,5 +27,5 @@ recipes.append({
     "name": "Circuit",
     "inputs": {id_map["copper_wire"]: 2, id_map["iron"]: 1},
     "output": id_map["circuit"],
-    "time": 1
+    "time": 2
 })

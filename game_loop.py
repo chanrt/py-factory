@@ -15,8 +15,6 @@ from world import world as w
 def game_loop():
     title = c.orbitron.render("PyFactory", True, pg.Color("white"))
 
-    im.add(5, 5, id_map["circuit"])
-
     while True:
         start = time()
         c.clock.tick(c.fps)

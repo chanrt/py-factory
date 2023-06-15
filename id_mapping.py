@@ -19,8 +19,11 @@ objects.extend([
 
 # first derivative products
 objects.extend([
-    "gear", "copper_wire", "circuit"
+    "gear", "pipe", "copper_wire", "circuit"
 ])
 
 for object_ in objects:
     id_map[object_] = len(id_map)
+
+
+reverse_id_map = {v: k for k, v in id_map.items()}

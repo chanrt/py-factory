@@ -6,6 +6,7 @@ from id_mapping import id_map
 class Constants:
     def __init__(self):
         self.fps = 120
+        self.frame = 0
         self.dt = 1.0 / self.fps
 
         self.num_cells = 100
@@ -77,6 +78,9 @@ class Constants:
 
     def set_dt(self, dt):
         self.dt = dt
+        self.frame += 1
+        if self.frame == self.fps:
+            self.frame = 0
 
     def set_screen(self, screen):
         self.screen = screen

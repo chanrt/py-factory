@@ -41,7 +41,7 @@ class UI:
             c.screen.blit(self.sprites[i], (x, y))
 
             if i + 1 == c.const_state:
-                pg.draw.rect(c.screen, pg.Color("white"), (x, y, c.ui_icon_size, c.ui_icon_size), 3)
+                pg.draw.rect(c.screen, pg.Color("white"), (x, y, c.ui_icon_size, c.ui_icon_size), 2)
 
             c.screen.blit(self.numbers[i], (x + self.numbers[i].get_width() // 2, y - 1 * c.ui_icon_size))
 
@@ -50,7 +50,7 @@ class UI:
         c.screen.blit(text, (1.5 * c.ui_icon_size, 3 * c.title_font_size))
 
     def render_desc(self, desc):
-        text = c.merriweather.render(desc, True, pg.Color("white"))
+        text = c.merriweather.render("Item: " + desc, True, pg.Color("white"))
         c.screen.blit(text, (1.5 * c.ui_icon_size, c.sh - 1.5 * c.ui_icon_size))
 
 ui = UI()
