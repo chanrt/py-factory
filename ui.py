@@ -47,6 +47,10 @@ class UI:
 
     def render_text(self, text):
         text = c.merriweather.render(text, True, pg.Color("white"))
-        c.screen.blit(text, (1.5 * c.ui_icon_size, 3 * c.title_font_size), )
+        c.screen.blit(text, (1.5 * c.ui_icon_size, 3 * c.title_font_size))
+
+    def render_desc(self, desc):
+        text = c.merriweather.render(desc, True, pg.Color("white"))
+        c.screen.blit(text, (1.5 * c.ui_icon_size, c.sh - 1.5 * c.ui_icon_size))
 
 ui = UI()

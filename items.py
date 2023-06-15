@@ -3,11 +3,19 @@ from conveyor import Conveyor, ConveyorUnderground
 from splitter import Splitter
 from id_mapping import id_map
 from images import img as i
+from ui import ui
+
+
+def get_key_from_value(value):
+    for key in id_map:
+        if id_map[key] == value:
+            return key
 
 
 class Item:
     def __init__(self, row, col, item):
         self.item = item
+        self.item_name = get_key_from_value(item).replace("_", " ").title()
         self.row = row
         self.col = col
         self.calc_position()
@@ -41,6 +49,9 @@ class Item:
     def render(self):
         if self.display:
             c.screen.blit(i.images[self.item], (self.x - c.player_x - c.cell_length // 2, self.y - c.player_y - c.cell_length // 2))
+
+    def render_tooltip(self):
+        ui.render_desc(self.item_name)
 
 
 class ItemManager:

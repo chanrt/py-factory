@@ -15,6 +15,8 @@ from world import world as w
 def game_loop():
     title = c.orbitron.render("PyFactory", True, pg.Color("white"))
 
+    im.add(5, 5, id_map["circuit"])
+
     while True:
         start = time()
         c.clock.tick(c.fps)
@@ -88,6 +90,12 @@ def game_loop():
             draw_action(cell_x, cell_y)
         else:
             sm.grid[cell_row][cell_col].render_tooltip()
+
+        if im.grid[cell_row][cell_col] != 0:
+            im.grid[cell_row][cell_col].render_tooltip()
+
+        if w.grid[cell_row][cell_col] != 0:
+            w.render_tooltip(cell_row, cell_col)
 
         pg.draw.rect(c.screen, pg.Color("black"), (0, 0, c.sw, c.title_font_size * 2))
         c.screen.blit(title, ((c.sw - title.get_width()) / 2, c.title_font_size / 2))

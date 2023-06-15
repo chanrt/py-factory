@@ -40,6 +40,7 @@ class Constants:
         self.full_color = pg.Color("#ff0000")
 
         self.ore_colors = dict([
+            (id_map["coal"], pg.Color("#151716")),
             (id_map["iron_ore"], pg.Color("#a19d94")),
             (id_map["copper_ore"], pg.Color("#b87333")),
         ])

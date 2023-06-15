@@ -22,8 +22,8 @@ class Mine:
 
     def update(self, sm, im):
         if self.mining is None:
-            if w.world[self.row][self.col] > 0:
-                self.mining = w.world[self.row][self.col]
+            if w.grid[self.row][self.col] > 0:
+                self.mining = w.grid[self.row][self.col]
                 self.progress = 0
         else:
             if self.progress < c.mine_time:
@@ -44,7 +44,7 @@ class Mine:
     def render_tooltip(self):
         pg.draw.rect(c.screen, c.target_color, (self.target_col * c.cell_length - c.player_x, self.target_row * c.cell_length - c.player_y, c.cell_length, c.cell_length), 3)
 
-        if w.world[self.row][self.col] == 0:
+        if w.grid[self.row][self.col] == 0:
             status = "NO ORE"
         elif self.progress < c.mine_time:
             status = "WORKING"

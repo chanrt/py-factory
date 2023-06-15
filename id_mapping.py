@@ -9,7 +9,7 @@ objects.extend([
 
 # ores
 objects.extend([
-    "iron_ore", "copper_ore"
+    "coal", "iron_ore", "copper_ore"
 ])
 
 # resources
