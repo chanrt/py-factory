@@ -1,9 +1,10 @@
 from os import path
 import pygame as pg
 from id_mapping import id_map
-
+from loader import get_resource_path
 
 class Constants:
+
     def __init__(self):
         self.fps = 120
         self.frame = 0
@@ -57,24 +58,24 @@ class Constants:
     def load_sounds(self):
         pg.init()
         root = "sounds"
-        self.structure_placed = pg.mixer.Sound(path.join(root, "structure_placed.wav"))
-        self.arm_placed = pg.mixer.Sound(path.join(root, "arm_placed.wav")) 
-        self.mine_placed = pg.mixer.Sound(path.join(root, "mine_placed.wav"))
-        self.furnace_placed = pg.mixer.Sound(path.join(root, "furnace_placed.wav"))
-        self.factory_placed = pg.mixer.Sound(path.join(root, "factory_placed.wav"))
+        self.structure_placed = pg.mixer.Sound(get_resource_path(path.join(root, "structure_placed.wav")))
+        self.arm_placed = pg.mixer.Sound(get_resource_path(path.join(root, "arm_placed.wav")))
+        self.mine_placed = pg.mixer.Sound(get_resource_path(path.join(root, "mine_placed.wav")))
+        self.furnace_placed = pg.mixer.Sound(get_resource_path(path.join(root, "furnace_placed.wav")))
+        self.factory_placed = pg.mixer.Sound(get_resource_path(path.join(root, "factory_placed.wav")))
 
-        self.item_pick_up = pg.mixer.Sound(path.join(root, "item_pick_up.wav"))
-        self.structure_destroy = pg.mixer.Sound(path.join(root, "structure_destroy.mp3"))
+        self.item_pick_up = pg.mixer.Sound(get_resource_path(path.join(root, "item_pick_up.wav")))
+        self.structure_destroy = pg.mixer.Sound(get_resource_path(path.join(root, "structure_destroy.mp3")))
         self.structure_destroy.set_volume(0.5)
 
-        self.rotate = pg.mixer.Sound(path.join(root, "rotate.wav"))
+        self.rotate = pg.mixer.Sound(get_resource_path(path.join(root, "rotate.wav")))
 
     def load_fonts(self):
         self.title_font_size = 30
-        self.orbitron = pg.font.Font("fonts/Orbitron-Regular.ttf", self.title_font_size)
+        self.orbitron = pg.font.Font(get_resource_path("fonts/Orbitron-Regular.ttf"), self.title_font_size)
 
         self.text_font_size = 20
-        self.merriweather = pg.font.Font("fonts/Merriweather-Regular.ttf", self.text_font_size)
+        self.merriweather = pg.font.Font(get_resource_path("fonts/Merriweather-Regular.ttf"), self.text_font_size)
 
     def set_dt(self, dt):
         self.dt = dt

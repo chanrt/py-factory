@@ -3,6 +3,7 @@ from os import path
 import pygame as pg
 
 from constants import consts as c
+from loader import get_resource_path
 
 
 durations = {
@@ -34,7 +35,7 @@ class MusicPlayer:
         song_name = self.file_names[self.current_song]
         self.next_song_time += durations[song_name] + c.music_padding
 
-        pg.mixer.music.load(path.join(self.file_location, song_name))
+        pg.mixer.music.load(get_resource_path(path.join(self.file_location, song_name)))
         pg.mixer.music.set_volume(0.5)
         pg.mixer.music.play()
 
