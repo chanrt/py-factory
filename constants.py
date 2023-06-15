@@ -1,7 +1,9 @@
 from os import path
 import pygame as pg
+
 from id_mapping import id_map
 from loader import get_resource_path
+
 
 class Constants:
 

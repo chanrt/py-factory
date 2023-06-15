@@ -18,12 +18,7 @@ class Images:
             elif value == 2:
                 self.images.append(Images.load_all_rotated_images(["splitter"]))
             else:
-                if value < 7:
-                    image_type = "structures"
-                else:
-                    image_type = "items"
-
-                self.images.append(Images.load_scale_image(key, image_type))
+                self.images.append(Images.load_scale_image(key))
 
     @staticmethod
     def load_all_rotated_images(image_names):
@@ -31,19 +26,21 @@ class Images:
 
         for image_name in image_names:
             for direction in range(4):
-                image_path = path.join("sprites", "structures", image_name + ".png")
+                image_path = path.join("sprites", image_name + ".png")
                 raw_image = pg.image.load(get_resource_path(image_path))
                 rotated_image = pg.transform.rotate(raw_image, -direction * 90)
                 scaled_image = pg.transform.smoothscale(rotated_image, (c.cell_length, c.cell_length))
                 images_list.append(scaled_image)
+            print("Loaded ", image_name)
         
         return images_list
 
     @staticmethod
-    def load_scale_image(image_name, image_type):
-        image_path = path.join("sprites", image_type, image_name + ".png")
+    def load_scale_image(image_name):
+        image_path = path.join("sprites", image_name + ".png")
         raw_image = pg.image.load(get_resource_path(image_path))
         scaled_image = pg.transform.smoothscale(raw_image, (c.cell_length, c.cell_length))
+        print("Loaded ", image_name)
         return scaled_image
     
     def convert_alpha(self):

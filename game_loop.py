@@ -3,11 +3,11 @@ import pygame as pg
 
 from constants import consts as c
 from id_mapping import id_map
-from items import item_manager as im
 from images import img as i
+from items import item_manager as im
 from music_player import music_player as mp
-from structure_manager import structure_manager as sm
-from ui.game import ui
+from structures.structure import structure_manager as sm
+from ui.game_ui import ui
 from utils import *
 from world import world as w
 

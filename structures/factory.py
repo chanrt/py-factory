@@ -4,7 +4,7 @@ from constants import consts as c
 from id_mapping import id_map, reverse_id_map
 from images import img as i
 from recipes import recipes
-from ui import ui
+from ui.game_ui import ui
 
 
 class Factory:

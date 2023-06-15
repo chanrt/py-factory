@@ -2,11 +2,11 @@ import pygame as pg
 from math import cos, pi, sin
 
 from constants import consts as c
-from structures.factory import Factory
-from structures.furnace import Furnace
 from id_mapping import id_map
 from images import img as i
-from ui.game import ui
+from structures.factory import Factory
+from structures.furnace import Furnace
+from ui.game_ui import ui
 
 
 class Arm:

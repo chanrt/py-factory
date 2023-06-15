@@ -1,3 +1,3 @@
-from ui.button import Button
-from ui.recipe_selection import select_recipe
-from ui.game import ui
+from ui import button
+from ui import game_ui
+from ui import recipe_selection

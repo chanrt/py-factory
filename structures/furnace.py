@@ -3,7 +3,7 @@ import pygame as pg
 from constants import consts as c
 from id_mapping import id_map
 from images import img as i
-from ui import ui
+from ui.game_ui import ui
 
 
 class Furnace:
