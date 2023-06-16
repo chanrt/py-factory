@@ -32,6 +32,7 @@ class World:
         x, y = pg.mouse.get_pos()
         ore = reverse_id_map[self.grid[row, col]].replace("_", " ").title()
         ore_text = c.merriweather.render(ore, True, pg.Color("white"))
+        pg.draw.rect(c.screen, pg.Color("black"), (x + 10, y + 10, ore_text.get_width() + 20, ore_text.get_height() + 20))
         c.screen.blit(ore_text, (x + 20, y + 20))
 
 

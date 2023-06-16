@@ -31,10 +31,13 @@ class StructureManager:
         if self.grid[row][col] == 0:
             if structure_type == id_map["conveyor"]:
                 new_structure = Conveyor(row, col, direction)
+                c.conveyor_placed.play()
             elif structure_type == id_map["conveyor_underground"]:
                 new_structure = ConveyorUnderground(row, col, direction)
+                c.conveyor_placed.play()
             elif structure_type == id_map["splitter"]:
                 new_structure = Splitter(row, col, direction)
+                c.conveyor_placed.play()
             elif structure_type == id_map["arm"]:
                 new_structure = Arm(row, col, direction)
                 c.arm_placed.play()
@@ -71,6 +74,8 @@ class StructureManager:
 
             if type(structure) not in [Conveyor, ConveyorUnderground, Splitter]:
                 c.structure_destroy.play()
+            else:
+                c.conveyor_pick_up.play()
 
             if isinstance(structure, ConveyorUnderground):
                 self.grid[structure.source_row][structure.source_col] = 0

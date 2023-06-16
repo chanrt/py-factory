@@ -71,6 +71,16 @@ def game_loop():
                     elif sm.grid[cell_row][cell_col] != 0:
                         sm.remove(cell_row, cell_col)
 
+            if event.type == pg.MOUSEWHEEL:
+                if event.y > 0:
+                    c.cell_length += 2
+                elif event.y < 0:
+                    c.cell_length -= 2
+
+                i.reload_images()
+                sm.apply_zoom()
+                im.apply_zoom()
+
         c.screen.fill(c.bg_color)
         if c.show_gridlines:
             draw_gridlines()

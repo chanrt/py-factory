@@ -30,10 +30,10 @@ class Arm:
         if self.caught_item is None:
             if self.angle == self.start_angle:
                 if im.grid[self.source_row][self.source_col] != 0:
-                    if type(im.grid[self.source_row][self.source_col]) == Furnace:
+                    if type(im.grid[self.target_row][self.target_col]) == Furnace:
                         if im.contains_ore(self.source_row, self.source_col):
                             self.caught_item = im.fetch_item(self.source_row, self.source_col)
-                    elif type(im.grid[self.source_row][self.source_col]) == Factory:
+                    elif type(im.grid[self.target_row][self.target_col]) == Factory:
                         factory = sm.grid[self.target_row][self.target_col]
                         if factory.will_accept_item(im.grid[self.source_row][self.source_col].item):
                             self.caught_item = im.fetch_item(self.source_row, self.source_col)

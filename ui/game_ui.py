@@ -48,10 +48,12 @@ class UI:
 
     def render_text(self, text):
         text = c.merriweather.render(text, True, pg.Color("white"))
+        pg.draw.rect(c.screen, pg.Color("black"), (1.5 * c.ui_icon_size, 2.5 * c.title_font_size, text.get_width(), 2 * text.get_height()))
         c.screen.blit(text, (1.5 * c.ui_icon_size, 3 * c.title_font_size))
 
     def render_desc(self, desc):
         text = c.merriweather.render("Item: " + desc, True, pg.Color("white"))
+        pg.draw.rect(c.screen, pg.Color("black"), (1.5 * c.ui_icon_size, c.sh - 2 * c.ui_icon_size, text.get_width(), 2 * text.get_height()))
         c.screen.blit(text, (1.5 * c.ui_icon_size, c.sh - 1.5 * c.ui_icon_size))
 
 

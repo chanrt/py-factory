@@ -31,7 +31,6 @@ class Images:
                 rotated_image = pg.transform.rotate(raw_image, -direction * 90)
                 scaled_image = pg.transform.smoothscale(rotated_image, (c.cell_length, c.cell_length))
                 images_list.append(scaled_image)
-            print("Loaded ", image_name)
         
         return images_list
 
@@ -40,7 +39,6 @@ class Images:
         image_path = path.join("sprites", image_name + ".png")
         raw_image = pg.image.load(get_resource_path(image_path))
         scaled_image = pg.transform.smoothscale(raw_image, (c.cell_length, c.cell_length))
-        print("Loaded ", image_name)
         return scaled_image
     
     def convert_alpha(self):

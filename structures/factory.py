@@ -20,6 +20,9 @@ class Factory:
         self.progress = 0
         
     def update(self, sm, im):
+        if self.recipe is None:
+            im.remove(self.row, self.col)
+
         if im.grid[self.row][self.col] != 0:
             item_inside = im.grid[self.row][self.col]
             if self.will_accept_item(item_inside.item):
@@ -67,7 +70,14 @@ class Factory:
 
     def render_recipe(self):
         if self.recipe is not None:
-            c.screen.blit(self.recipe_text, (self.x + (c.cell_length - self.recipe_text.get_width()) // 2, self.y - c.cell_length))
+            rel_x = self.x - c.player_x + (c.cell_length - self.recipe_text.get_width()) // 2
+
+            if self.direction == 0:
+                rel_y = self.y - c.player_y + 1.5 * c.cell_length
+            else:
+                rel_y = self.y - c.player_y - c.cell_length
+            pg.draw.rect(c.screen, pg.Color("black"), (rel_x - 5, rel_y - 5, self.recipe_text.get_width() + 10, self.recipe_text.get_height() + 10))
+            c.screen.blit(self.recipe_text, (rel_x, rel_y))
 
     def set_recipe(self, recipe):
         if self.recipe is None or recipe is not None:

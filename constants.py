@@ -60,12 +60,16 @@ class Constants:
     def load_sounds(self):
         pg.init()
         root = "sounds"
+        self.conveyor_placed = pg.mixer.Sound(get_resource_path(path.join(root, "conveyor_placed.wav")))
+        self.conveyor_placed.set_volume(0.33)
         self.structure_placed = pg.mixer.Sound(get_resource_path(path.join(root, "structure_placed.wav")))
         self.arm_placed = pg.mixer.Sound(get_resource_path(path.join(root, "arm_placed.wav")))
         self.mine_placed = pg.mixer.Sound(get_resource_path(path.join(root, "mine_placed.wav")))
         self.furnace_placed = pg.mixer.Sound(get_resource_path(path.join(root, "furnace_placed.wav")))
         self.factory_placed = pg.mixer.Sound(get_resource_path(path.join(root, "factory_placed.wav")))
 
+        self.conveyor_pick_up = pg.mixer.Sound(get_resource_path(path.join(root, "conveyor_pick_up.wav")))
+        self.conveyor_pick_up.set_volume(0.33)
         self.item_pick_up = pg.mixer.Sound(get_resource_path(path.join(root, "item_pick_up.wav")))
         self.structure_destroy = pg.mixer.Sound(get_resource_path(path.join(root, "structure_destroy.mp3")))
         self.structure_destroy.set_volume(0.5)
@@ -97,6 +101,13 @@ class Constants:
 
     def toggle_gridlines(self):
         self.show_gridlines = not self.show_gridlines
+
+    def cycle_const_state(self, direction):
+        self.const_state += direction
+        if self.const_state < 1:
+            self.const_state = 7
+        elif self.const_state > 7:
+            self.const_state = 1
 
     def cycle_rot_state(self, direction):
         self.rot_state = (self.rot_state + direction) % 4
