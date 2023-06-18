@@ -29,16 +29,9 @@ class Arm:
 
         if self.caught_item is None:
             if self.angle == self.start_angle:
-                if im.grid[self.source_row][self.source_col] != 0:
-                    if type(im.grid[self.target_row][self.target_col]) == Furnace:
-                        if im.contains_ore(self.source_row, self.source_col):
-                            self.caught_item = im.fetch_item(self.source_row, self.source_col)
-                    elif type(im.grid[self.target_row][self.target_col]) == Factory:
-                        factory = sm.grid[self.target_row][self.target_col]
-                        if factory.will_accept_item(im.grid[self.source_row][self.source_col].item):
-                            self.caught_item = im.fetch_item(self.source_row, self.source_col)
-                    else:
-                        self.caught_item = im.fetch_item(self.source_row, self.source_col)
+                potential_item = im.grid[self.source_row][self.source_col]
+                if potential_item!= 0 and not self.target_blocked and self.item_can_be_moved(sm, im):
+                    self.caught_item = im.fetch_item(self.source_row, self.source_col)
             else:
                 self.angle += c.arm_speed * c.dt
                 self.constrain_angle()
@@ -51,7 +44,7 @@ class Arm:
             self.caught_item.y = self.end_y + c.player_y
 
             if abs(self.angle - self.stop_angle) % (2 * pi) < c.arm_speed * c.dt:
-                if not self.target_blocked:
+                if not self.target_blocked and self.item_can_be_moved(sm, im):
                     im.drop_item(self.caught_item, self.end_x + c.player_x, self.end_y + c.player_y)
                     self.caught_item = None
 
@@ -74,6 +67,24 @@ class Arm:
             status = "WORKING"
 
         ui.render_text(f"Arm [{status}]: (L/R) to rotate")
+
+    def item_can_be_moved(self, sm, im):
+        if type(sm.grid[self.target_row][self.target_col]) == Furnace:
+            furnace = sm.grid[self.target_row][self.target_col]
+            item = im.grid[self.source_row][self.source_col]
+            if item != 0 and furnace.will_accept_item(item.item):
+                return True
+            else:
+                return False
+        elif type(sm.grid[self.target_row][self.target_col]) == Factory:
+            factory = sm.grid[self.target_row][self.target_col]
+            item = im.grid[self.source_row][self.source_col]
+            if item != 0 and factory.will_accept_item(item.item):
+                return True
+            else:
+                return False
+        else:
+            return True
 
     def rotate(self, direction):
         self.direction = (self.direction + direction) % 4

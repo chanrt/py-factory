@@ -17,6 +17,7 @@ class Factory:
 
         self.recipe = None
         self.storage = []
+        self.buffer = []
         self.progress = 0
         
     def update(self, sm, im):
@@ -27,16 +28,20 @@ class Factory:
             item_inside = im.grid[self.row][self.col]
             if self.will_accept_item(item_inside.item):
                 self.storage.append(item_inside.item)
-                im.remove(self.row, self.col)
+            im.remove(self.row, self.col)
 
         if self.recipe_fulfilled():
             self.progress += c.dt
 
             if self.progress > recipes[self.recipe]["time"]:
-                if im.grid[self.target_row][self.target_col] == 0 and sm.item_can_be_placed(self.target_row, self.target_col):
+                if len(self.buffer) < c.buffer_size:
                     self.progress = 0
+                    self.buffer.append(recipes[self.recipe]["output"])
                     self.storage = []
-                    im.add(self.target_row, self.target_col, recipes[self.recipe]["output"])
+        
+        if len(self.buffer) > 0:
+            if im.grid[self.target_row][self.target_col] == 0 and sm.item_can_be_placed(self.target_row, self.target_col):
+                im.add(self.target_row, self.target_col, self.buffer.pop(0))
 
     def render(self):
         c.screen.blit(i.images[id_map["factory"]], (self.x - c.player_x, self.y - c.player_y))
@@ -44,7 +49,7 @@ class Factory:
         if self.recipe is not None:
             if self.progress != 0 and self.progress < recipes[self.recipe]["time"]:
                 pg.draw.rect(c.screen, c.working_color, (self.x - c.player_x, self.y - c.player_y, c.cell_length, c.cell_length), 2)
-            elif self.progress >= recipes[self.recipe]["time"]:
+            elif len(self.buffer) == c.buffer_size:
                 pg.draw.rect(c.screen, c.full_color, (self.x - c.player_x, self.y - c.player_y, c.cell_length, c.cell_length), 3)
         else:
             pg.draw.circle(c.screen, c.error_color, (self.x - c.player_x + c.cell_length // 2, self.y - c.player_y + c.cell_length // 2), 4 * c.cell_length // 5, 2)
@@ -56,17 +61,23 @@ class Factory:
             status = "NO RECIPE"
             ui.render_text(f"Factory [{status}]: (L/R) to rotate, (LMB) to select recipe")
         else: 
-            if self.progress == 0:
+            if len(self.buffer) == c.buffer_size:
+                status = "FULL"
+            elif self.progress == 0:
                 status = "WAITING"
             elif self.progress < recipes[self.recipe]["time"]:
                 status = "WORKING"
             else:
-                status = "FULL"
+                status = "ERROR"
 
             producing_item = recipes[self.recipe]["name"]
             ui.render_text(f"Factory [{status}]: Producing {producing_item} (L/R) to rotate, (LMB) to select recipe")
         
         self.render_recipe()
+
+        if len(self.buffer) > 0:
+            item_text = f"{len(self.buffer)} {reverse_id_map[self.buffer[0]].replace('_', ' ')}(s) in buffer"
+            ui.render_desc(item_text)
 
     def render_recipe(self):
         if self.recipe is not None:
@@ -95,6 +106,9 @@ class Factory:
     
     def will_accept_item(self, item):
         if self.recipe is None:
+            return False
+        
+        if len(self.buffer) == c.buffer_size:
             return False
 
         if item in recipes[self.recipe]["inputs"]:

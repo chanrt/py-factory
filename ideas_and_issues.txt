@@ -2,6 +2,11 @@ Ideas:
 -> Procedural ore generation
 -> Infinite world
 -> Longer supply chains
+-> Copy sections of factory
+-> Add buffers to structure
+-> Ability to undo and redo actions
+-> Implement a save system
+-> Add pause screen
 
 Issues:
 -> Arm over-rotating

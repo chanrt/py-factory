@@ -22,6 +22,7 @@ class Constants:
         self.const_state = 1
         self.rot_state = 0
         self.ug_state = 3
+        self.buffer_size = 4
 
         self.music_padding = 5
         self.ui_icon_size = 30
